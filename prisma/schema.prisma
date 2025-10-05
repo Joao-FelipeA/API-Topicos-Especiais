@@ -25,3 +25,13 @@ model Servicos{
   @@map("servicos")
 }
 
+model Funcionario {
+  id             Int      @id @default(autoincrement())
+  nome           String
+  telefone       Int
+  email          String
+  especialidade  String
+
+  @@map("funcionarios")
+}
+
