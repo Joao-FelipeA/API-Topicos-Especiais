@@ -1,0 +1,32 @@
+{
+  "name": "api-topicos-especiais",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joao-FelipeA/API-Topicos-Especiais.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Joao-FelipeA/API-Topicos-Especiais/issues"
+  },
+  "homepage": "https://github.com/Joao-FelipeA/API-Topicos-Especiais#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
