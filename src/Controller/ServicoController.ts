@@ -1,67 +1,169 @@
 import { Request, Response } from 'express';
-// 1. O nome do service deve ser mudado para refletir a nova entidade
 import * as servicosService from '../Service/ServicoService';
+import { createServicoSchema, updateServicoSchema } from '../Schemas/validation';
+import { z } from 'zod';
+import prisma from '../database/prisma';
 
-// 2. CREATE: Cria um novo Serviço
 export const createServico = async (req: Request, res: Response) => {
   try {
-    // 3. Muda a variável e a função do service
-    const servico = await servicosService.create(req.body);
+    const validatedData = createServicoSchema.parse(req.body);
+    
+    const clienteExiste = await prisma.cliente.findUnique({
+      where: { id: validatedData.clienteID }
+    });
+    
+    if (!clienteExiste) {
+      return res.status(404).json({ message: "Cliente não encontrado" });
+    }
+    
+    const funcionarioExiste = await prisma.funcionario.findUnique({
+      where: { id: validatedData.funcionarioID }
+    });
+    
+    if (!funcionarioExiste) {
+      return res.status(404).json({ message: "Funcionário não encontrado" });
+    }
+    
+    const servico = await servicosService.create(validatedData);
     return res.status(201).json(servico);
+    
   } catch (error: any) {
-    // 400 Bad Request para erros de validação ou dados
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Dados inválidos",
+        errors: error.issues.map((err: any) => ({
+          field: err.path.join('.'),
+          message: err.message
+        }))
+      });
+    }
+    
     return res.status(400).json({ message: error.message });
   }
 };
 
-// 5. READ ALL: Retorna todos os Serviços
 export const getAllServicos = async (req: Request, res: Response) => {
   try {
-    // 6. Muda a variável e a função do service
     const servicos = await servicosService.getAll();
     return res.json(servicos);
   } catch (error: any) {
-    // 500 Internal Server Error para erros de servidor/conexão
     return res.status(500).json({ message: error.message });
   }
 };
 
-// 7. READ BY ID: Retorna um Serviço específico
+export const getOpcoesParaServico = async (req: Request, res: Response) => {
+  try {
+    const clientes = await prisma.cliente.findMany({
+      select: {
+        id: true,
+        nome: true,
+        email: true
+      }
+    });
+    
+    const funcionarios = await prisma.funcionario.findMany({
+      select: {
+        id: true,
+        nome: true,
+        especialidade: true
+      }
+    });
+    
+    return res.json({
+      clientes,
+      funcionarios
+    });
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 export const getServicoById = async (req: Request, res: Response) => {
   try {
-    // Converte o ID do parâmetro da URL para número
-    const servico = await servicosService.getById(Number(req.params.id));
-    // 404 Not Found se não encontrar
-    if (!servico) return res.status(404).json({ message: 'Serviço não encontrado.' });
+    const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0) {
+      return res.status(400).json({ message: "ID inválido. Deve ser um número inteiro positivo" });
+    }
+    
+    const servico = await servicosService.getById(id);
+    if (!servico) {
+      return res.status(404).json({ message: 'Serviço não encontrado.' });
+    }
     return res.json(servico);
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
   }
 };
 
-// 8. UPDATE: Atualiza um Serviço específico
 export const updateServico = async (req: Request, res: Response) => {
   try {
-    // 9. Usa o ID e os dados do body para atualizar
-    const servico = await servicosService.update(Number(req.params.id), req.body);
+    const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0) {
+      return res.status(400).json({ message: "ID inválido. Deve ser um número inteiro positivo" });
+    }
+
+    const validatedData = updateServicoSchema.parse(req.body);
+    
+    if (Object.keys(validatedData).length === 0) {
+      return res.status(400).json({ message: "Nenhum dado para atualizar foi fornecido." });
+    }
+
+    if (validatedData.clienteID) {
+      const clienteExiste = await prisma.cliente.findUnique({
+        where: { id: validatedData.clienteID }
+      });
+      
+      if (!clienteExiste) {
+        return res.status(404).json({ message: "Cliente não encontrado" });
+      }
+    }
+
+    if (validatedData.funcionarioID) {
+      const funcionarioExiste = await prisma.funcionario.findUnique({
+        where: { id: validatedData.funcionarioID }
+      });
+      
+      if (!funcionarioExiste) {
+        return res.status(404).json({ message: "Funcionário não encontrado" });
+      }
+    }
+
+    const servico = await servicosService.update(id, validatedData);
     return res.json(servico);
+    
   } catch (error: any) {
-    // O código 'P2025' é o erro padrão do Prisma para "registro não encontrado para a operação de update/delete"
-    if (error.code === 'P2025') return res.status(404).json({ message: 'Serviço não encontrado.' });
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "Dados inválidos",
+        errors: error.issues.map((err: any) => ({
+          field: err.path.join('.'),
+          message: err.message
+        }))
+      });
+    }
+    
+    if (error.code === 'P2025') {
+      return res.status(404).json({ message: 'Serviço não encontrado.' });
+    }
+    
     return res.status(500).json({ message: error.message });
   }
 };
 
-// 10. DELETE: Remove um Serviço específico
 export const deleteServico = async (req: Request, res: Response) => {
   try {
-    // 11. Chama a função de remoção
-    await servicosService.remove(Number(req.params.id));
-    // 204 No Content, pois o recurso foi deletado com sucesso
+    const id = Number(req.params.id);
+    if (isNaN(id) || id <= 0) {
+      return res.status(400).json({ message: "ID inválido. Deve ser um número inteiro positivo" });
+    }
+    
+    await servicosService.remove(id);
     return res.status(204).send();
+    
   } catch (error: any) {
-    // Verifica novamente se o registro existia
-    if (error.code === 'P2025') return res.status(404).json({ message: 'Serviço não encontrado.' });
+    if (error.code === 'P2025') {
+      return res.status(404).json({ message: 'Serviço não encontrado.' });
+    }
     return res.status(500).json({ message: error.message });
   }
 };

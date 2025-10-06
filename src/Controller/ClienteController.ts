@@ -1,6 +1,8 @@
 import {Request, Response } from "express";
 import ClienteService from "../Service/ClienteService";
 import {Cliente} from "../generated/prisma";
+import { createClienteSchema, updateClienteSchema } from "../Schemas/validation";
+import { z } from "zod";
 
 const clienteController = {
     async getClientes(req: Request, res: Response): Promise<void>{
@@ -25,132 +27,59 @@ const clienteController = {
     },
 
     async createCliente(req: Request, res: Response): Promise<void>{
-        const {nome, CPF, CNPJ, email, telefone }: {nome: string, CPF: string, CNPJ?: string, email: string, telefone: number} = req.body
-
-        if(typeof nome !== 'string' || nome.trim() === ""){
-            res.status(400).json({message: "O nome é obrigatorio"});
-            return;
-        }
-
-        if(typeof CPF !== 'string' || CPF.trim() === ""){
-            res.status(400).json({message: "O CPF deve ser preenchido"});
-            return;
-        }
-
-        if(typeof email !== 'string' || email.trim() === ""){
-            res.status(400).json({message: "O email deve ser preenchido"})
-            return;
-        }
-
-        let telefoneNumber: number;
-        if (typeof telefone === 'string') {
-            telefoneNumber = parseInt(telefone, 10);
-        } else if (typeof telefone === 'number') {
-            telefoneNumber = telefone;
-        } else {
-            res.status(400).json({message: "O telefone deve ser um número válido"});
-            return;
-        }
-
-        if (isNaN(telefoneNumber) || telefoneNumber <= 0) {
-            res.status(400).json({message: "O telefone deve ser um número válido"});
-            return;
-        }
-
         try {
-            const cliente: Cliente = await ClienteService.createCliente({ nome, CPF, CNPJ, email, telefone: telefoneNumber});
+            const validatedData = createClienteSchema.parse(req.body);
+            const cliente: Cliente = await ClienteService.createCliente(validatedData);
             res.status(201).json(cliente);
-        } catch( error ){
+            
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                res.status(400).json({ 
+                    message: "Dados inválidos",
+                    errors: error.issues.map((err: any) => ({
+                        field: err.path.join('.'),
+                        message: err.message
+                    }))
+                });
+                return;
+            }
+            
             res.status(409).json({ message: "Já existe um cliente com este CPF"});
         }
     },
 
     async updateCliente(req: Request, res: Response): Promise<void>{
-        const id: number = parseInt(req.params.id, 10);
-        if(isNaN(id) || id <= 0){
-            res.status(400).json({message: "ID inválido. Deve ser um número inteiro positivo"})
-        }
-
-        const {nome, CPF, CNPJ, email, telefone}: {nome?: string, CPF?: string, CNPJ?: string, email?: string, telefone?: number } = req.body;
-        let dataToUpdate: {nome?: string, CPF?: string, CNPJ?: string, email?: string, telefone?: number} = {};
-
-        if (nome !== undefined){
-            if(typeof nome !== 'string' || nome.trim() === ""){
-            res.status(400).json({message: "O nome não pode ficar vazio"});
-            return;
-            }
-            dataToUpdate.nome = nome;
-        }
-
-        if(CPF !== undefined){
-        if(typeof CPF !== 'string' || CPF.trim() === ""){
-            res.status(400).json({message: "O CPF não pode ficar vazio"});
-            return;
-        }
-        dataToUpdate.CPF = CPF;
-    }
-
-        if(CNPJ !== undefined){
-            if(typeof CNPJ !== 'string' || CNPJ.trim() === ""){
-            res.status(400).json({message: "O CNPJ não pode ficar vazio"});
-            return;
-        }
-        dataToUpdate.CNPJ = CNPJ;
-    }
-
-        if (email !== undefined){
-            if(typeof email !== 'string' || email.trim() === ""){
-            res.status(400).json({message: "O email não pode ficar vazio"})
-            return;
-        }
-        dataToUpdate.email = email;
-        }
-
-        if( telefone !== undefined){
-            let telefoneNumber: number;
-            if (typeof telefone === 'string') {
-                telefoneNumber = parseInt(telefone, 10);
-            } else if (typeof telefone === 'number') {
-                telefoneNumber = telefone;
-            } else {
-                res.status(400).json({message: "O telefone deve ser um número válido"});
-                return;
-            }
-
-            if (isNaN(telefoneNumber) || telefoneNumber <= 0) {
-                res.status(400).json({message: "O telefone deve ser um número válido"});
-                return;
-            }
-            dataToUpdate.telefone = telefoneNumber;
-        }
-
-        if (Object.keys(dataToUpdate).length === 0) {
-            res.status(400).json({ message: "Nenhum dado para atualizar foi fornecido (nome ou idade)." });
-            return;
-        }
-
         try {
-            if (
-                typeof dataToUpdate.nome === 'string' &&
-                typeof dataToUpdate.CPF === 'string' &&
-                typeof dataToUpdate.email === 'string' &&
-                typeof dataToUpdate.telefone === 'number'
-            ) {
-                const cliente: Cliente = await ClienteService.updateCliente(id, {
-                    nome: dataToUpdate.nome,
-                    CPF: dataToUpdate.CPF,
-                    CNPJ: dataToUpdate.CNPJ ?? null,
-                    email: dataToUpdate.email,
-                    telefone: dataToUpdate.telefone
-                });
-                res.json(cliente);
-            } else {
-                res.status(400).json({ message: "Todos os campos obrigatórios (nome, CPF, email, telefone) devem ser fornecidos para atualização." });
+            const id: number = parseInt(req.params.id, 10);
+            if(isNaN(id) || id <= 0){
+                res.status(400).json({message: "ID inválido. Deve ser um número inteiro positivo"});
+                return;
             }
+
+            const validatedData = updateClienteSchema.parse(req.body);
+            
+            if (Object.keys(validatedData).length === 0) {
+                res.status(400).json({ message: "Nenhum dado para atualizar foi fornecido." });
+                return;
+            }
+
+            const cliente: Cliente = await ClienteService.updateCliente(id, validatedData);
+            res.json(cliente);
+            
         } catch (error) {
+            if (error instanceof z.ZodError) {
+                res.status(400).json({ 
+                    message: "Dados inválidos",
+                    errors: error.issues.map((err: any) => ({
+                        field: err.path.join('.'),
+                        message: err.message
+                    }))
+                });
+                return;
+            }
+            
             res.status(500).json({ message: "Erro ao atualizar cliente." });
         }
-
     },
 
     async deleteCliente(req: Request, res: Response): Promise<void>{

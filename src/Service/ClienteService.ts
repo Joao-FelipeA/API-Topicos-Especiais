@@ -15,7 +15,7 @@ const ClienteService = {
         return prisma.cliente.create({ data })
     },
     
-    async updateCliente (id: number, data: {nome: string, CPF: string, CNPJ?: string | null, email: string, telefone: number}): Promise<Cliente>{
+    async updateCliente (id: number, data: {nome?: string, CPF?: string, CNPJ?: string | null, email?: string, telefone?: number}): Promise<Cliente>{
         return prisma.cliente.update({
             where:  { id },
             data,

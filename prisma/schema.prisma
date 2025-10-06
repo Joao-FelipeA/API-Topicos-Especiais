@@ -22,16 +22,22 @@ model Cliente{
   CNPJ String?
   email String
   telefone Int
+  servicos Servico[]
 
   @@map("clientes")
 }
-model Servicos{
+model Servico{
 
   id Int @id @default(autoincrement())
-  dta_abertura DateTime
-  dta_conclusao DateTime
+  dta_abertura DateTime @default(now())
+  dta_conclusao DateTime?
   status String
   valor_total Float
+  clienteID Int
+  funcionarioID Int
+
+  cliente Cliente @relation(fields: [clienteID], references: [id])
+  funcionario Funcionario @relation(fields: [funcionarioID], references: [id])
 
   @@map("servicos")
 }
@@ -42,6 +48,7 @@ model Funcionario {
   telefone       Int
   email          String
   especialidade  String
+  servicos Servico[]
 
   @@map("funcionarios")
 }
