@@ -54,7 +54,22 @@ const clienteController = {
         return;
       }
 
+if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as any).code === 'P2002' &&
+      "meta" in error &&
+      (error as any).meta?.target?.includes('CPF')
+    ) {
       res.status(409).json({ message: "Já existe um cliente com este CPF" });
+      return;
+    }
+
+    res.status(500).json({ 
+      message: "Erro interno do servidor ao criar cliente",
+      error: typeof error === "object" && error !== null && "message" in error ? (error as any).message : String(error)
+    });
     }
   },
 

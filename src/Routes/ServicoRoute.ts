@@ -65,7 +65,7 @@ router.get("/servicos/:id", ServicoController.getServicoById);
  *              status:
  *                type: string
  *              valor_total:
- *                type: float
+ *                type: number
  *              clienteID:
  *                type: integer
  *              funcionarioID:
@@ -105,7 +105,7 @@ router.post("/servicos", ServicoController.createServico);
  *              status:
  *                type: string
  *              valor_total:
- *                type: float
+ *                type: number
  *              clienteID:
  *                type: integer
  *              funcionarioID:
