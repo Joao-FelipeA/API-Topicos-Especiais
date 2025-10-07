@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { FuncionarioController } from "../Controller/FuncionarioController";
+import funcionarioController  from "../Controller/FuncionarioController";
 
 const router = Router();
-const controller = new FuncionarioController();
 
 /**
  * @swagger
@@ -15,38 +14,69 @@ const controller = new FuncionarioController();
  * @swagger
  * /funcionarios:
  *   get:
- *      summary: Retorna uma lista de todos os funcionarios
- *      tags: [Funcionarios]
- *      responses:
- *        200:
- *         description: Lista de funcionarios
- *        500:
+ *     summary: Retorna uma lista de todos os funcionários com seus serviços
+ *     tags: [Funcionarios]
+ *     responses:
+ *       200:
+ *         description: Lista de funcionários com IDs dos serviços associados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Funcionario'
+ *             example:
+ *               - id: 1
+ *                 nome: "Maria Santos"
+ *                 telefone: 11999999999
+ *                 email: "maria@email.com"
+ *                 especialidade: "Desenvolvedor"
+ *                 servicos: [{"id": 1}, {"id": 3}]
+ *               - id: 2
+ *                 nome: "João Silva"
+ *                 telefone: 11888888888
+ *                 email: "joao@email.com"
+ *                 especialidade: "Designer"
+ *                 servicos: [{"id": 2}]
+ *       500:
  *         description: Erro no servidor
  */
-router.get("/funcionarios", controller.listar.bind(controller));
+router.get("/funcionarios", funcionarioController.listar.bind(funcionarioController));
 
 /**
  * @swagger
  * /funcionarios/{id}:
  *   get:
- *     summary: Retorna um funcionario pelo ID
+ *     summary: Retorna um funcionário pelo ID com seus serviços
  *     tags: [Funcionarios]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID do funcionario
+ *         description: ID do funcionário
  *         schema:
  *           type: integer
+ *           example: 1
  *     responses:
  *       200:
- *         description: funcionario encontrado
+ *         description: Funcionário encontrado com IDs dos serviços associados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Funcionario'
+ *             example:
+ *               id: 1
+ *               nome: "Maria Santos"
+ *               telefone: 11999999999
+ *               email: "maria@email.com"
+ *               especialidade: "Desenvolvedor"
+ *               servicos: [{"id": 1}, {"id": 3}, {"id": 5}]
  *       400:
  *         description: ID inválido
  *       404:
- *         description: funcionario não encontrado
+ *         description: Funcionário não encontrado
  */
-router.get("/funcionarios/:id", controller.buscar.bind(controller));
+router.get("/funcionarios/:id", funcionarioController.buscar.bind(funcionarioController));
 
 /**
  * @swagger
@@ -79,7 +109,7 @@ router.get("/funcionarios/:id", controller.buscar.bind(controller));
  *       409:
  *        description: Erro ao criar funcionario
  */
-router.post("/funcionarios", controller.criar.bind(controller));
+router.post("/funcionarios", funcionarioController.criar.bind(funcionarioController));
 
 /**
  * @swagger
@@ -119,7 +149,7 @@ router.post("/funcionarios", controller.criar.bind(controller));
  *              404:
  *                description: Funcionario não encontrado
  */
-router.put("/funcionarios/:id", controller.atualizar.bind(controller));
+router.put("/funcionarios/:id", funcionarioController.atualizar.bind(funcionarioController));
 
 /**
  * @swagger
@@ -142,6 +172,6 @@ router.put("/funcionarios/:id", controller.atualizar.bind(controller));
  *       404:
  *        description: Funcionario não encontrado
  */
-router.delete("/funcionarios/:id", controller.deletar.bind(controller));
+router.delete("/funcionarios/:id", funcionarioController.deletar.bind(funcionarioController));
 
 export default router;

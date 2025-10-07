@@ -14,12 +14,28 @@ const router = Router();
  * @swagger
  * /clientes:
  *   get:
- *      summary: Retorna uma lista de todos os clientes
- *      tags: [Clientes]
- *      responses:
- *        200:
- *         description: Lista de clientes
- *        500:
+ *     summary: Retorna uma lista de todos os clientes com seus serviços
+ *     tags: [Clientes]
+ *     responses:
+ *       200:
+ *         description: Lista de clientes com IDs dos serviços associados
+ *         content:
+ *             example:
+ *               - id: 1
+ *                 nome: "João Silva"
+ *                 CPF: "12345678901"
+ *                 CNPJ: "12345678000123"
+ *                 email: "joao@email.com"
+ *                 telefone: 11999999999
+ *                 servicos: [{"id": 1}, {"id": 3}]
+ *               - id: 2
+ *                 nome: "Maria Santos"
+ *                 CPF: "98765432109"
+ *                 CNPJ: null
+ *                 email: "maria@email.com"
+ *                 telefone: 11888888888
+ *                 servicos: [{"id": 2}]
+ *       500:
  *         description: Erro no servidor
  */
 router.get("/clientes", clienteController.getClientes);

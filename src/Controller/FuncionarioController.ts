@@ -5,36 +5,60 @@ import {
   createFuncionarioSchema,
   updateFuncionarioSchema,
 } from "../Schemas/validation";
+import prisma from "../database/prisma";
 import { z } from "zod";
 
 const service = new FuncionarioService();
 
-export class FuncionarioController {
-  async listar(req: Request, res: Response) {
+const funcionarioController = {
+  async listar(req: Request, res: Response): Promise<void> {
     try {
-      const funcionarios = await service.listarTodos();
-      res.status(201).json(funcionarios);
+      const funcionarios = await prisma.funcionario.findMany({
+        include: {
+          servicos: {
+            select: {
+              id: true
+            }
+          }
+        }
+      });
+      res.status(200).json(funcionarios);
     } catch (error) {
-      res.status(500).json({ message: "Erro ao listar funcionários" });
+      res.status(500).json({ message: "Erro ao buscar funcionários." });
     }
-  }
+  },
 
-  async buscar(req: Request, res: Response) {
-    const id = Number(req.params.id);
-
+  async buscar(req: Request, res: Response): Promise<void> {
+    const id: number = parseInt(req.params.id, 10);
     if (isNaN(id) || id <= 0) {
-      return res
+      res
         .status(400)
         .json({ message: "ID inválido. Deve ser um número inteiro positivo" });
+      return;
     }
 
-    const funcionario = await service.buscarPorId(id);
-    if (!funcionario) {
-      return res.status(404).json({ message: "Funcionário não encontrado" });
-    }
-    res.json(funcionario);
-  }
+    try {
+      const funcionario = await prisma.funcionario.findUnique({
+        where: { id },
+        include: {
+          servicos: {
+            select: {
+              id: true
+            }
+          }
+        }
+      });
 
+      if (!funcionario) {
+        res.status(404).json({ message: "Funcionário não encontrado" });
+        return;
+      }
+
+      res.json(funcionario);
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao buscar funcionário." });
+    }
+  },
   async criar(req: Request, res: Response) {
     try {
       const validatedData = createFuncionarioSchema.parse(req.body);
@@ -54,7 +78,7 @@ export class FuncionarioController {
 
       res.status(409).json({ message: "Erro ao criar funcionário" });
     }
-  }
+  },
 
   async atualizar(req: Request, res: Response) {
     try {
@@ -91,7 +115,7 @@ export class FuncionarioController {
 
       res.status(404).json({ message: "Funcionário não encontrado." });
     }
-  }
+  },
 
   async deletar(req: Request, res: Response) {
     const id = Number(req.params.id);
@@ -110,3 +134,5 @@ export class FuncionarioController {
     }
   }
 }
+
+export default funcionarioController;

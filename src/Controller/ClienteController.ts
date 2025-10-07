@@ -6,12 +6,21 @@ import {
   updateClienteSchema,
 } from "../Schemas/validation";
 import { z } from "zod";
+import prisma from "../database/prisma";
 
 const clienteController = {
   async getClientes(req: Request, res: Response): Promise<void> {
     try {
-      const clientes: Cliente[] = await ClienteService.getClientes();
-      res.status(201).json(clientes);
+      const clientes = await prisma.cliente.findMany({
+        include: {
+          servicos: {
+            select: {
+              id: true
+            }
+          }
+        }
+      });
+      res.status(200).json(clientes);
     } catch (error) {
       res.status(500).json({ message: "Erro ao buscar clientes." });
     }
@@ -26,13 +35,27 @@ const clienteController = {
       return;
     }
 
-    const cliente: Cliente | null = await ClienteService.getClienteById(id);
-    if (!cliente) {
-      res.status(404).json({ message: "Cliente não encontrado" });
-      return;
-    }
+    try {
+      const cliente = await prisma.cliente.findUnique({
+        where: { id },
+        include: {
+          servicos: {
+            select: {
+              id: true
+            }
+          }
+        }
+      });
 
-    res.json(cliente);
+      if (!cliente) {
+        res.status(404).json({ message: "Cliente não encontrado" });
+        return;
+      }
+
+      res.json(cliente);
+    } catch (error) {
+      res.status(500).json({ message: "Erro ao buscar cliente." });
+    }
   },
 
   async createCliente(req: Request, res: Response): Promise<void> {
@@ -42,7 +65,7 @@ const clienteController = {
         validatedData
       );
       res.status(201).json(cliente);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         res.status(400).json({
           message: "Dados inválidos",
@@ -54,22 +77,22 @@ const clienteController = {
         return;
       }
 
-if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      (error as any).code === 'P2002' &&
-      "meta" in error &&
-      (error as any).meta?.target?.includes('CPF')
-    ) {
-      res.status(409).json({ message: "Já existe um cliente com este CPF" });
-      return;
-    }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        (error as any).code === 'P2002' &&
+        "meta" in error &&
+        (error as any).meta?.target?.includes('CPF')
+      ) {
+        res.status(409).json({ message: "Já existe um cliente com este CPF" });
+        return;
+      }
 
-    res.status(500).json({ 
-      message: "Erro interno do servidor ao criar cliente",
-      error: typeof error === "object" && error !== null && "message" in error ? (error as any).message : String(error)
-    });
+      res.status(500).json({ 
+        message: "Erro interno do servidor ao criar cliente",
+        error: typeof error === "object" && error !== null && "message" in error ? (error as any).message : String(error)
+      });
     }
   },
 
@@ -99,7 +122,7 @@ if (
         validatedData
       );
       res.json(cliente);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         res.status(400).json({
           message: "Dados inválidos",
@@ -111,6 +134,17 @@ if (
         return;
       }
 
+      if (error.code === 'P2025') {
+        res.status(404).json({ message: "Cliente não encontrado" });
+        return;
+      }
+
+      if (error.code === 'P2002' && error.meta?.target?.includes('CPF')) {
+        res.status(409).json({ message: "Já existe um cliente com este CPF" });
+        return;
+      }
+
+      console.error('Erro ao atualizar cliente:', error);
       res.status(500).json({ message: "Erro ao atualizar cliente." });
     }
   },
@@ -125,8 +159,14 @@ if (
     try {
       await ClienteService.deleteCliente(id);
       res.status(204).send();
-    } catch (error) {
-      res.status(404).json({ message: "Cliente não encontrado" });
+    } catch (error: any) {
+      if (error.code === 'P2025') {
+        res.status(404).json({ message: "Cliente não encontrado" });
+        return;
+      }
+      
+      console.error('Erro ao deletar cliente:', error);
+      res.status(500).json({ message: "Erro interno do servidor" });
     }
   },
 };
