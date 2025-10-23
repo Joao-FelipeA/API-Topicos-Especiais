@@ -4,9 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx watch src/index.ts"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "npm install --prefix frontend && npm run setup --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "prisma:generate": "npx prisma generate --prefix backend",
+    "prisma:migrate": "npx prisma migrate dev --prefix backend",
+    "start": "npm run start --prefix backend"
+    
   },
   "repository": {
     "type": "git",
@@ -18,21 +24,5 @@
   "bugs": {
     "url": "https://github.com/Joao-FelipeA/API-Topicos-Especiais/issues"
   },
-  "homepage": "https://github.com/Joao-FelipeA/API-Topicos-Especiais#readme",
-  "dependencies": {
-    "@prisma/client": "^6.16.3",
-    "@types/swagger-jsdoc": "^6.0.4",
-    "@types/swagger-ui-express": "^4.1.8",
-    "express": "^5.1.0",
-    "prisma": "^6.16.3",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "zod": "^4.1.11"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.6.2",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
-  }
+  "homepage": "https://github.com/Joao-FelipeA/API-Topicos-Especiais#readme"
 }

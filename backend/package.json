@@ -1,0 +1,42 @@
+{
+  "name": "api-topicos-especiais",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "setup": "npm install && npm run prisma:generate && npm run prisma:migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Joao-FelipeA/API-Topicos-Especiais.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Joao-FelipeA/API-Topicos-Especiais/issues"
+  },
+  "homepage": "https://github.com/Joao-FelipeA/API-Topicos-Especiais#readme",
+  "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "api-topicos-especiais": "file:",
+    "express": "^5.1.0",
+    "prisma": "^6.16.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
