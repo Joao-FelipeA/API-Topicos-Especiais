@@ -2,8 +2,8 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom"; // Importe os componentes de roteamento
 
 // Importe suas páginas (ajuste os caminhos se necessário)
-import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
+import  Home  from "./pages/Home";
+import  Login  from "./pages/Login";
 import { Servicos } from "./pages/Servicos"; // Importe a nova página de Serviços
 
 function App() {

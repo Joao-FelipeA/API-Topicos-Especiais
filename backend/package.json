@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsx watch src/index.ts",
+    "dev": "npx tsx watch src/index.ts",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "setup": "npm install && npm run prisma:generate && npm run prisma:migrate"
@@ -34,7 +34,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@types/express": "^5.0.3",
+    "@types/express": "^5.0.5",
     "@types/node": "^24.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"

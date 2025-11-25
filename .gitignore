@@ -1,0 +1,70 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs e arquivos temporários
+logs/
+*.log
+tmp/
+temp/
+
+# Ambientes e segredos
+.env
+.env.*
+secrets.*
+*.pem
+*.key
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+.npmrc
+
+# Build / distribuídos
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+env/
+pip-wheel-metadata/
+*.egg-info/
+
+# .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.cache
+*.pdb
+
+# Docker
+docker-compose.override.yml
+**/docker-compose.override.yml
+
+# Coverage / testes
+coverage/
+coverage.xml
+htmlcov/
+
+# IDEs / editores
+.vscode/
+.idea/
+*.iml
+
+# Bancos locais
+*.sqlite3
+*.db
+
+# Arquivos gerados pelo sistema de build CI
+/build/
