@@ -1,7 +1,5 @@
-import { useState, useCallback } from "react";
-import type { Cliente } from "../../types/cliente";
-import { createCliente } from "../../services/clienteService";
-import { validateCreateCliente } from "../../schemas/validation";
+// ...existing code...
+import React, { useState, useCallback } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -12,245 +10,76 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+import { apiFetch } from "../../api";
 
-interface CriarClienteModalProps {
-  open: boolean;
-  onClose: () => void;
-  onSuccess: (novoPaciente: Cliente) => void;
-}
-
-export const CriarClienteModal = ({
-  open,
-  onClose,
-  onSuccess,
-}: CriarClienteModalProps) => {
-  const INITIAL_FORM_DATA = {
-    nome: "",
-    email: "",
-    cpf: "",
-    telefone: "",
-    dataNascimento: "",
-  };
-
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [salvando, setSalvando] = useState(false);
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-      if (errors[name]) {
-        setErrors((prev) => ({ ...prev, [name]: "" }));
-      }
-    },
-    [errors]
-  );
-
-  const handleSave = useCallback(async () => {
-    const validation = import { useState, useCallback } from "react";
-import type { Cliente } from "../../types/cliente";
-import { createCliente } from "../../services/clienteService";
-import { validateCreateCliente } from "../../schemas/validation";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Box,
-  CircularProgress,
-} from "@mui/material";
-
-interface CriarClienteModalProps {
-  open: boolean;
-  onClose: () => void;
-  onSuccess: (novoPaciente: Cliente) => void;
-}
-
-export const CriarClienteModal = ({
-  open,
-  onClose,
-  onSuccess,
-}: CriarClienteModalProps) => {
-  const INITIAL_FORM_DATA = {
-    nome: "",
-    email: "",
-    cpf: "",
-    telefone: "",
-    dataNascimento: "",
-  };
-
-  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [salvando, setSalvando] = useState(false);
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-      if (errors[name]) {
-        setErrors((prev) => ({ ...prev, [name]: "" }));
-      }
-    },
-    [errors]
-  );
-
-  const handleSave = useCallback(async () => {
-    const validation = validateCreateCliente(formData);
-
-    if (!validation.success) {
-      setErrors(validation.errors);
-      return;
-    }
-
-    setSalvando(true);
-    try {
-      const novoCliente = await createCliente(validation.data);
-      onSuccess(novoCliente);
-      setFormData(INITIAL_FORM_DATA);
-      setErrors({});
-      onClose();
-    } catch (error) {
-      console.error("Erro ao criar cliente:", error);
-      setErrors({ submit: "Erro ao criar cliente. Tente novamente." });
-    } finally {
-      setSalvando(false);
-    }
-  }, [formData, onSuccess, onClose]);
-
-  const handleClose = useCallback(() => {
-    setFormData(INITIAL_FORM_DATA);
-    setErrors({});
-    onClose();
-  }, [onClose]);
-
-  return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 600, fontSize: "1.25rem" }}>
-        Cadastrar Novo Cliente
-      </DialogTitle>
-
-      <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
-          <TextField
-            fullWidth
-            label="Nome"
-            name="nome"
-            value={formData.nome}
-            onChange={handleInputChange}
-            placeholder="Digite o nome completo"
-            required
-            error={!!errors.nome}
-            helperText={errors.nome}
-          />
-
-          <TextField
-            fullWidth
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder="Digite o email"
-            required
-            error={!!errors.email}
-            helperText={errors.email}
-          />
-
-          <TextField
-            fullWidth
-            label="CPF"
-            name="cpf"
-            value={formData.cpf}
-            onChange={handleInputChange}
-            placeholder="Digite o CPF"
-            required
-            error={!!errors.cpf}
-            helperText={errors.cpf}
-          />
-
-          <TextField
-            fullWidth
-            label="Telefone"
-            name="telefone"
-            value={formData.telefone}
-            onChange={handleInputChange}
-            placeholder="Digite o telefone (opcional)"
-            error={!!errors.telefone}
-            helperText={errors.telefone}
-          />
-
-          <TextField
-            fullWidth
-            label="Data de Nascimento"
-            name="dataNascimento"
-            value={formData.dataNascimento}
-            onChange={handleInputChange}
-            placeholder="YYYY-MM-DD"
-            required
-            error={!!errors.dataNascimento}
-            helperText={errors.dataNascimento}
-          />
-        </Box>
-      </DialogContent>
-
-      <DialogActions sx={{ p: 2 }}>
-        <Button onClick={handleClose} color="inherit">
-          Cancelar
-        </Button>
-
-        <Button
-          onClick={handleSave}
-          variant="contained"
-          color="primary"
-          disabled={salvando}
-        >
-          {salvando ? (
-            <>
-              <CircularProgress size={20} sx={{ mr: 1 }} />
-              Salvando...
-            </>
-          ) : (
-            "Cadastrar"
-          )}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+type Cliente = {
+  id?: number | string;
+  nome: string;
+  email?: string;
+  telefone?: string;
 };
 
-export default CriarClienteModal;(formData);
+interface CriarClienteModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSuccess: (novoCliente: Cliente) => void;
+}
 
-    if (!validation.success) {
-      setErrors(validation.errors);
+const INITIAL_FORM = { nome: "", email: "", telefone: "" };
+
+export const CriarClienteModal: React.FC<CriarClienteModalProps> = ({
+  open,
+  onClose,
+  onSuccess,
+}) => {
+  const [form, setForm] = useState<Cliente>(INITIAL_FORM);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setForm((p) => ({ ...p, [name]: value }));
+      if (errors[name]) setErrors((e) => ({ ...e, [name]: "" }));
+    },
+    [errors]
+  );
+
+  const validate = useCallback((data: Cliente) => {
+    const errs: Record<string, string> = {};
+    if (!data.nome || !String(data.nome).trim()) errs.nome = "Nome é obrigatório";
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+      errs.email = "Email inválido";
+    return { valid: Object.keys(errs).length === 0, errors: errs };
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    const { valid, errors: vErrors } = validate(form);
+    if (!valid) {
+      setErrors(vErrors);
       return;
     }
 
-    setSalvando(true);
+    setSaving(true);
     try {
-      const novoCliente = await createCliente(validation.data);
-      onSuccess(novoCliente);
-      setFormData(INITIAL_FORM_DATA);
+      const novo = await apiFetch<Cliente>("/clientes", {
+        method: "POST",
+        body: JSON.stringify(form),
+      });
+      onSuccess(novo);
+      setForm(INITIAL_FORM);
       setErrors({});
       onClose();
-    } catch (error) {
-      console.error("Erro ao criar cliente:", error);
-      setErrors({ submit: "Erro ao criar cliente. Tente novamente." });
+    } catch (err: any) {
+      console.error("Erro ao criar cliente:", err);
+      setErrors((prev) => ({ ...prev, submit: err?.message || "Erro ao criar cliente" }));
     } finally {
-      setSalvando(false);
+      setSaving(false);
     }
-  }, [formData, onSuccess, onClose]);
+  }, [form, validate, onSuccess, onClose]);
 
   const handleClose = useCallback(() => {
-    setFormData(INITIAL_FORM_DATA);
+    setForm(INITIAL_FORM);
     setErrors({});
     onClose();
   }, [onClose]);
@@ -267,9 +96,8 @@ export default CriarClienteModal;(formData);
             fullWidth
             label="Nome"
             name="nome"
-            value={formData.nome}
-            onChange={handleInputChange}
-            placeholder="Digite o nome completo"
+            value={form.nome}
+            onChange={handleChange}
             required
             error={!!errors.nome}
             helperText={errors.nome}
@@ -280,63 +108,35 @@ export default CriarClienteModal;(formData);
             label="Email"
             name="email"
             type="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder="Digite o email"
-            required
+            value={form.email}
+            onChange={handleChange}
             error={!!errors.email}
             helperText={errors.email}
           />
 
           <TextField
             fullWidth
-            label="CPF"
-            name="cpf"
-            value={formData.cpf}
-            onChange={handleInputChange}
-            placeholder="Digite o CPF"
-            required
-            error={!!errors.cpf}
-            helperText={errors.cpf}
-          />
-
-          <TextField
-            fullWidth
             label="Telefone"
             name="telefone"
-            value={formData.telefone}
-            onChange={handleInputChange}
-            placeholder="Digite o telefone (opcional)"
+            value={form.telefone}
+            onChange={handleChange}
             error={!!errors.telefone}
             helperText={errors.telefone}
           />
 
-          <TextField
-            fullWidth
-            label="Data de Nascimento"
-            name="dataNascimento"
-            value={formData.dataNascimento}
-            onChange={handleInputChange}
-            placeholder="YYYY-MM-DD"
-            required
-            error={!!errors.dataNascimento}
-            helperText={errors.dataNascimento}
-          />
+          {errors.submit && (
+            <Box sx={{ color: "error.main", fontSize: "0.9rem" }}>{errors.submit}</Box>
+          )}
         </Box>
       </DialogContent>
 
       <DialogActions sx={{ p: 2 }}>
-        <Button onClick={handleClose} color="inherit">
+        <Button onClick={handleClose} color="inherit" disabled={saving}>
           Cancelar
         </Button>
 
-        <Button
-          onClick={handleSave}
-          variant="contained"
-          color="primary"
-          disabled={salvando}
-        >
-          {salvando ? (
+        <Button onClick={handleSave} variant="contained" color="primary" disabled={saving}>
+          {saving ? (
             <>
               <CircularProgress size={20} sx={{ mr: 1 }} />
               Salvando...
@@ -351,3 +151,4 @@ export default CriarClienteModal;(formData);
 };
 
 export default CriarClienteModal;
+// ...existing code...
