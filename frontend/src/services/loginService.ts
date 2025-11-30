@@ -1,11 +1,20 @@
 import axios from "axios";
-import type { Gerente } from "../types/gerente";
-import { API_ENDPOINTS } from "../config/api";
 
-export const login = async (email: string, senha: string): Promise<Gerente> => {
-  const response = await axios.post<Gerente>(API_ENDPOINTS.LOGIN, {
-    email,
-    senha,
-  });
-  return response.data;
+declare const process: { env: { REACT_APP_API_BASE?: string } };
+
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:3000";
+
+type LoginResponse = {
+  token?: string;
+  funcionario?: any;
+  [key: string]: any;
+};
+
+async function login(email: string, senha: string): Promise<LoginResponse> {
+  const resp = await axios.post(`${API_BASE}/auth/login`, { email, senha });
+  return resp.data;
+}
+
+export default {
+  login,
 };

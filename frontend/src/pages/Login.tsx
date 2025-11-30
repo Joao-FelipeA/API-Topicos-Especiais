@@ -1,192 +1,97 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Paper,
-  Alert,
-  CircularProgress,
-} from "@mui/material";
-import { Login as LoginIcon } from "@mui/icons-material";
-import { z } from "zod";
-import axios from "axios";
+import { Box, Button, TextField, Typography, Alert, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import authService from "../services/loginService";
 
-const emailSchema = z.email();
-const passwordSchema = z.string().min(4);
-
-interface LoginFormData {
-  email: string;
-  password: string;
+interface Funcionario {
+  id: number;
+  nome: string;
+  telefone?: string;
+  email?: string;
+  especialidade?: string;
+  CPF?: string;
+  [key: string]: any;
 }
 
-interface LoginResponse {
-  success: boolean;
-  message: string;
-  user?: {
-    id: string;
-    nome: string;
-    email: string;
-  };
-}
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [funcionario, setFuncionario] = useState<Funcionario | null>(null);
 
-const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  const validateEmail = (email: string) => {
-    if (!email.trim()) return { isValid: false, error: "" };
-    const result = emailSchema.safeParse(email);
-    return {
-      isValid: result.success,
-      error: result.success ? "" : "Email inválido",
-    };
-  };
-
-  const validatePassword = (password: string) => {
-    if (!password) return { isValid: false, error: "" };
-    const result = passwordSchema.safeParse(password);
-    return {
-      isValid: result.success,
-      error: result.success ? "" : "A senha deve ter pelo menos 4 caracteres",
-    };
-  };
-
-  const isFormValid =
-    validateEmail(email).isValid && validatePassword(password).isValid;
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-    setError("");
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-    setError("");
-  };
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError("");
-    setSuccess("");
-
-    if (!isFormValid) {
-      setError("Por favor, preencha todos os campos corretamente");
-      return;
-    }
-
-    setIsLoading(true);
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
-      const response = await axios.post<LoginResponse>(
-        "http://localhost:3333/login",
-        {
-          email,
-          password,
-        }
-      );
+      const resp = await authService.login(email, senha);
 
-      // Axios automaticamente trata HTTP 200-299 como sucesso
-      const data = response.data;
-      setSuccess(data.message || "Login realizado com sucesso!");
-    } catch (error) {
-      // Axios automaticamente trata códigos de erro como exceção
-      if (axios.isAxiosError(error)) {
-        // Erro HTTP (400, 401, 403, 500, etc.)
-        const errorMessage =
-          error.response?.data?.message ||
-          `Erro ${error.response?.status}: ${error.response?.statusText}`;
-        setError(errorMessage);
-      } else {
-        // Erro de rede ou outros
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Erro de conexão. Verifique se o servidor está rodando.";
-        setError(errorMessage);
+      const token = resp?.token;
+      const dataFuncionario: Funcionario = resp?.funcionario ?? resp?.user ?? resp;
+
+      if (!dataFuncionario) {
+        throw new Error("Resposta do servidor inválida. Não veio dados do funcionário.");
       }
+
+      if (token) localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(dataFuncionario));
+      setFuncionario(dataFuncionario);
+      navigate("/servicos");
+    } catch (err: any) {
+      console.error("Erro ao logar:", err);
+      setError(err?.response?.data?.message ?? err?.message ?? "Erro ao autenticar");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="80vh"
-    >
-      <Paper elevation={2} sx={{ p: 3, width: 320 }}>
-        <Box textAlign="center" mb={2}>
-          <LoginIcon sx={{ fontSize: 36, color: "primary.main", mb: 1 }} />
-          <Typography variant="h6" component="h1" fontWeight={600} mb={1}>
-            Bem-vindo
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Faça login para acessar o sistema
-          </Typography>
-        </Box>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {success}
-          </Alert>
-        )}
-        <Box component="form" noValidate onSubmit={handleSubmit}>
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            value={email}
-            onChange={handleEmailChange}
-            error={email.length > 0 && !validateEmail(email).isValid}
-            helperText={validateEmail(email).error}
-            disabled={isLoading}
-          />
-          <TextField
-            label="Senha"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={handlePasswordChange}
-            error={password.length > 0 && !validatePassword(password).isValid}
-            helperText={validatePassword(password).error}
-            disabled={isLoading}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={!isFormValid || isLoading}
-            sx={{
-              mt: 2,
-              opacity: isFormValid && !isLoading ? 1 : 0.6,
-              cursor: isFormValid && !isLoading ? "pointer" : "not-allowed",
-            }}
-          >
-            {isLoading ? (
-              <Box display="flex" alignItems="center" gap={1}>
-                <CircularProgress size={20} color="inherit" />
-                <span>Entrando...</span>
-              </Box>
-            ) : (
-              "Entrar"
-            )}
+    <Box maxWidth={480} mx="auto" mt={6} p={3} boxShadow={2} borderRadius={1}>
+      <Typography variant="h5" mb={2}>Login</Typography>
+
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="Email"
+          fullWidth
+          margin="normal"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+        />
+        <TextField
+          label="Senha"
+          fullWidth
+          margin="normal"
+          type="password"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+          autoComplete="current-password"
+        />
+
+        <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+          <Button variant="outlined" onClick={() => navigate("/")}>Voltar</Button>
+          <Button type="submit" variant="contained" disabled={loading}>
+            {loading ? <CircularProgress size={20} /> : "Entrar"}
           </Button>
         </Box>
-      </Paper>
+      </form>
+
+      {funcionario && (
+        <Box mt={3} p={2} sx={{ background: "#fafafa", borderRadius: 1 }}>
+          <Typography variant="subtitle1">Funcionário autenticado:</Typography>
+          <Typography>ID: {funcionario.id}</Typography>
+          <Typography>Nome: {funcionario.nome}</Typography>
+          <Typography>Email: {funcionario.email ?? "—"}</Typography>
+          <Typography>Telefone: {funcionario.telefone ?? "—"}</Typography>
+          <Typography>Especialidade: {funcionario.especialidade ?? "—"}</Typography>
+          <Typography>CPF: {funcionario.CPF ?? "—"}</Typography>
+        </Box>
+      )}
     </Box>
   );
-};
-
-export default Login;
+}
