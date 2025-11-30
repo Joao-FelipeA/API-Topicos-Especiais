@@ -15,7 +15,7 @@ import { validateField } from "../../schemas/validation";
 import { getClientes } from "../../services/clienteService";
 import { getFuncionarios } from "../../services/funcionarioService";
 import type { Cliente } from "../../types/cliente";
-import type { funcionario } from "../../types/funcionario";
+import type { Funcionario } from "../../types/funcionario";
 
 interface CriarServicoModalProps{
     open: boolean;
@@ -41,9 +41,10 @@ export const CriarServicoModal = ({
     });
 
     const [clientes, setClientes] = useState<Cliente[]>([]);
-    const [funcionarios, setFuncionarios] = useState<funcionario[]>([]);
+    const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [errors, setErrors] = useState<Record<string,string>>({});
 
     useEffect(() => {
         let mounted = true;
@@ -55,7 +56,6 @@ export const CriarServicoModal = ({
                 setFuncionarios(f);
             })
             .catch(() => {
-                /* ignore load errors for now */
             })
             .finally(() => {
                 if (mounted) setLoading(false);
@@ -68,17 +68,56 @@ export const CriarServicoModal = ({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        const schemaKey = name === "clienteId" ? "clienteID" : name === "funcionarioId" ? "funcionarioID" : name;
+        try {
+            if (typeof validateField === "function") {
+                (validateField as any)(createServicoSchema.partial(), schemaKey, value);
+            }
+            setErrors(prev => ({ ...prev, [name]: "" }));
+        } catch (err: any) {
+            setErrors(prev => ({ ...prev, [name]: err?.message ?? "Valor inválido" }));
+        }
     };
 
     const handleSelectChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
         setFormData(prev => ({ ...prev, [name]: value }));
+        const schemaKey = name === "clienteId" ? "clienteID" : "funcionarioID";
+        try {
+            if (typeof validateField === "function") {
+                (validateField as any)(createServicoSchema.partial(), schemaKey, value);
+            }
+            setErrors(prev => ({ ...prev, [name]: "" }));
+        } catch (err: any) {
+            setErrors(prev => ({ ...prev, [name]: err?.message ?? "Valor inválido" }));
+        }
     };
 
     const handleSave = useCallback(async () => {
         if (saving) return;
         setSaving(true);
+        setErrors({});
         try {
+            const payloadForValidation = {
+                motivo: formData.motivo || undefined,
+                dta_abertura: formData.dta_abertura ? new Date(formData.dta_abertura).toISOString() : undefined,
+                clienteID: formData.clienteId ? Number(formData.clienteId) : undefined,
+                funcionarioID: formData.funcionarioId ? Number(formData.funcionarioId) : undefined,
+            };
+
+            const parsed = createServicoSchema.partial().safeParse(payloadForValidation);
+            if (!parsed.success) {
+                const fieldErrors: Record<string,string> = {};
+                for (const issue of parsed.error.issues) {
+                    const key = issue.path[0] as string;
+                    const uiKey = key === "clienteID" ? "clienteId" : key === "funcionarioID" ? "funcionarioId" : key;
+                    fieldErrors[uiKey] = issue.message;
+                }
+                setErrors(fieldErrors);
+                setSaving(false);
+                return;
+            }
+
             await onSave({
                 motivo: formData.motivo,
                 dta_abertura: formData.dta_abertura ? new Date(formData.dta_abertura) : new Date(),
@@ -108,6 +147,8 @@ export const CriarServicoModal = ({
                             name="motivo"
                             value={formData.motivo}
                             onChange={handleChange}
+                            error={!!errors.motivo}
+                            helperText={errors.motivo}
                         />
                         <TextField
                             margin="normal"
@@ -118,6 +159,8 @@ export const CriarServicoModal = ({
                             InputLabelProps={{ shrink: true }}
                             value={formData.dta_abertura}
                             onChange={handleChange}
+                            error={!!errors.dta_abertura}
+                            helperText={errors.dta_abertura}
                         />
                         <TextField
                             select
@@ -127,11 +170,13 @@ export const CriarServicoModal = ({
                             name="clienteId"
                             value={String(formData.clienteId)}
                             onChange={handleSelectChange("clienteId")}
+                            error={!!errors.clienteId}
+                            helperText={errors.clienteId}
                         >
                             <MenuItem value={0}>Selecione</MenuItem>
                             {clientes.map(c => (
-                                <MenuItem key={(c as any).id} value={(c as any).id}>
-                                    {(c as any).nome}
+                                <MenuItem key={c.id} value={c.id}>
+                                    {c.nome}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -143,11 +188,13 @@ export const CriarServicoModal = ({
                             name="funcionarioId"
                             value={String(formData.funcionarioId)}
                             onChange={handleSelectChange("funcionarioId")}
+                            error={!!errors.funcionarioId}
+                            helperText={errors.funcionarioId}
                         >
                             <MenuItem value={0}>Selecione</MenuItem>
                             {funcionarios.map(f => (
-                                <MenuItem key={(f as any).id} value={(f as any).id}>
-                                    {(f as any).nome}
+                                <MenuItem key={f.id} value={f.id}>
+                                    {f.nome}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -163,3 +210,5 @@ export const CriarServicoModal = ({
         </Dialog>
     );
 }
+
+export default CriarServicoModal;

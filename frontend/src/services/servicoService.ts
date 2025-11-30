@@ -7,16 +7,16 @@ export const getServicos = async (): Promise<Servico[]> =>{
     return response.data
 };
 
-export const deleteServico = async (id:number): Promise<void> =>{
+export const deleteServicos = async (id:number): Promise<void> =>{
     await axios.delete(`${API_ENDPOINTS.SERVICOS}/${id}`);
 }
 
-export const updateServico = async (id:number, dados: Partial<Servico>): Promise<Servico> =>{
+export const updateServicos = async (id:number, dados: Partial<Servico>): Promise<Servico> =>{
     const response = await axios.put(`${API_ENDPOINTS.SERVICOS}/${id}`, dados, {});
     return response.data;
 }
 
-export const CreateServico = async (dados: Omit<Servico, "id">): Promise<Servico> =>{
+export const CreateServicos = async (dados: Omit<Servico, "id">): Promise<Servico> =>{
     const response = await axios.post(API_ENDPOINTS.SERVICOS, dados, {});
     return response.data;
 };
