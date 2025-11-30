@@ -4,5 +4,4 @@ export interface Cliente {
   email: string;
   cpf: string;
   telefone?: string;
-  dataNascimento: string;
 }

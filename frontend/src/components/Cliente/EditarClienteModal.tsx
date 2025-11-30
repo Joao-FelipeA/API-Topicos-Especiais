@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import type { Paciente } from "../../types/paciente";
-import { updatePaciente } from "../../services/pacienteService";
-import { validateUpdatePaciente } from "../../schemas/validation";
+// Certifique-se que o caminho do tipo está correto
+import type { Cliente } from "../../types/cliente"; 
+import { updateClientes } from "../../services/clienteService";
 import { validateUpdateCliente } from "../../schemas/validation";
 import {
   Dialog,
@@ -14,58 +14,59 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-interface EditarPacienteModalProps {
+interface EditarClienteModalProps {
   open: boolean;
-  paciente: Paciente | null;
+  cliente: Cliente | null;
   onClose: () => void;
-  onSave: (pacienteAtualizado: Paciente) => void;
+  onSave: (clienteAtualizado: Cliente) => void;
 }
 
-export const EditarPacienteModal = ({
+export const EditarClienteModal = ({
   open,
-  paciente,
+  cliente, // Recebendo o cliente
   onClose,
   onSave,
-}: EditarPacienteModalProps) => {
-  const INITIAL_FORM_DATA: Paciente = {
+}: EditarClienteModalProps) => {
+  
+  const INITIAL_FORM_DATA: Cliente = {
     id: 0,
     nome: "",
     email: "",
     cpf: "",
     telefone: "",
-    dataNascimento: "",
   };
 
-  const [formData, setFormData] = useState<Paciente>(INITIAL_FORM_DATA);
+  const [formData, setFormData] = useState<Cliente>(INITIAL_FORM_DATA);
   const [salvando, setSalvando] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    if (paciente && open) {
-      setFormData({
-        ...paciente,
-        dataNascimento: paciente.dataNascimento?.split("T")[0] || "",
+useEffect(() => {
+  if (open && cliente) {
+    setFormData({
+        id: cliente.id,
+        nome: cliente.nome || "",
+        email: cliente.email || "",
+        cpf: cliente.cpf || "",
+        telefone: cliente.telefone || "",
       });
-      setErrors({});
+      setErrors({}); 
     }
-  }, [paciente, open]);
+  }, [open, cliente]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
-      setFormData((prev: any) => {
-          return ({
-              ...prev,
-              [name]: value,
-          });
-      });
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
       setErrors((prev) => ({ ...prev, [name]: "" }));
     },
     []
   );
 
   const handleSave = useCallback(async () => {
-    const validation = validateUpdatePaciente(formData);
+    const validation = validateUpdateCliente(formData);
 
     if (!validation.success) {
       setErrors(validation.errors);
@@ -74,13 +75,14 @@ export const EditarPacienteModal = ({
 
     setSalvando(true);
     try {
-      await updatePaciente(validation.data.id, validation.data);
+      await updateClientes(validation.data.id, validation.data);
+      
       onSave(validation.data);
-      setErrors({});
+      
       onClose();
     } catch (error) {
-      console.error("Erro ao salvar paciente:", error);
-      setErrors({ submit: "Erro ao salvar paciente. Tente novamente." });
+      console.error("Erro ao salvar cliente:", error);
+      setErrors({ submit: "Erro ao salvar cliente. Tente novamente." });
     } finally {
       setSalvando(false);
     }
@@ -89,11 +91,17 @@ export const EditarPacienteModal = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 600, fontSize: "1.25rem" }}>
-        Editar Paciente
+        Editar Cliente
       </DialogTitle>
 
       <DialogContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+          
+          {/* Exibindo erro geral de envio, se houver */}
+          {errors.submit && (
+             <Box color="error.main" mb={1}>{errors.submit}</Box>
+          )}
+
           <TextField
             fullWidth
             label="Nome"
@@ -132,28 +140,17 @@ export const EditarPacienteModal = ({
             fullWidth
             label="Telefone"
             name="telefone"
-            value={formData.telefone || ""}
+            value={formData.telefone}
             onChange={handleInputChange}
             placeholder="Digite o telefone"
             error={!!errors.telefone}
             helperText={errors.telefone}
           />
-
-          <TextField
-            fullWidth
-            label="Data de Nascimento"
-            name="dataNascimento"
-            value={formData.dataNascimento}
-            onChange={handleInputChange}
-            placeholder="YYYY-MM-DD"
-            error={!!errors.dataNascimento}
-            helperText={errors.dataNascimento}
-          />
         </Box>
       </DialogContent>
 
       <DialogActions sx={{ p: 2 }}>
-        <Button onClick={onClose} color="inherit">
+        <Button onClick={onClose} color="inherit" disabled={salvando}>
           Cancelar
         </Button>
 
@@ -165,7 +162,7 @@ export const EditarPacienteModal = ({
         >
           {salvando ? (
             <>
-              <CircularProgress size={20} sx={{ mr: 1 }} />
+              <CircularProgress size={20} sx={{ mr: 1, color: 'inherit' }} />
               Salvando...
             </>
           ) : (
@@ -177,4 +174,4 @@ export const EditarPacienteModal = ({
   );
 };
 
-export default EditarPacienteModal;
+export default EditarClienteModal;
