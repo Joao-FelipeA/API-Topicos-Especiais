@@ -1,3 +1,5 @@
+import type { Funcionario } from "./funcionario";
+import type { Cliente } from "./cliente";
 export interface Servico{
     id: number;
     dta_abertura: Date;
@@ -5,14 +7,8 @@ export interface Servico{
     motivo: string;
     status: string;
     valor_total:Float32Array;
-    cliente?:{
-        id: number,
-        nome: string;
-        cpf: string;
-    };
-    funcionario?:{
-        id: number,
-        nome:string,
-        especialidade: string
-    };
+    cliente?: Cliente;
+    funcionario?: Funcionario;
+    clienteID?: number;      
+    funcionarioID?: number;
 }

@@ -1,6 +1,9 @@
 import axios from "axios";
+import type { Servico } from "../types/servico"; // usar o tipo centralizado
 
-const API_BASE = (import.meta.env.VITE_API_BASE as string) || ((globalThis as any).process?.env?.REACT_APP_API_BASE as string) || "http://localhost:3000";
+const API_BASE =
+  (import.meta.env.VITE_API_BASE as string) ||
+  "http://localhost:3000";
 
 export type ServicoPayload = {
   motivo?: string;
@@ -12,31 +15,20 @@ export type ServicoPayload = {
   dta_conclusao?: string | null;
 };
 
-export interface Servico {
-  id: number;
-  dta_abertura: string;
-  dta_conclusao: string | null;
-  status: string;
-  valor_total: number;
-  clienteID?: number;
-  funcionarioID?: number;
-  cliente?: any;
-  funcionario?: any;
-}
-
-export async function getServicos() {
+export async function getServicos(): Promise<Servico[]> {
   const resp = await axios.get<Servico[]>(`${API_BASE}/servicos`);
   return resp.data;
 }
 
-// aceitar o payload com campos opcionais
-export async function createServico(payload: ServicoPayload) {
+export async function createServico(payload: ServicoPayload): Promise<Servico> {
   const resp = await axios.post<Servico>(`${API_BASE}/servicos`, payload);
   return resp.data;
 }
 
-// update também recebe payload parcial
-export async function updateServico(id: number, payload: Partial<ServicoPayload>) {
+export async function updateServico(
+  id: number,
+  payload: Partial<ServicoPayload>
+): Promise<Servico> {
   const resp = await axios.put<Servico>(`${API_BASE}/servicos/${id}`, payload);
   return resp.data;
 }
