@@ -1,22 +1,48 @@
 import axios from "axios";
-import type { Servico } from "../types/servico";
-import { API_ENDPOINTS } from "../config/api";
 
-export const getServicos = async (): Promise<Servico[]> =>{
-    const response = await axios.get(API_ENDPOINTS.SERVICOS);
-    return response.data
+const API_BASE = (import.meta.env.VITE_API_BASE as string) || ((globalThis as any).process?.env?.REACT_APP_API_BASE as string) || "http://localhost:3000";
+
+export type ServicoPayload = {
+  motivo?: string;
+  dta_abertura?: string;
+  clienteID?: number;
+  funcionarioID?: number;
+  status?: string;
+  valor_total?: number;
+  dta_conclusao?: string | null;
 };
 
-export const deleteServicos = async (id:number): Promise<void> =>{
-    await axios.delete(`${API_ENDPOINTS.SERVICOS}/${id}`);
+export interface Servico {
+  id: number;
+  dta_abertura: string;
+  dta_conclusao: string | null;
+  status: string;
+  valor_total: number;
+  clienteID?: number;
+  funcionarioID?: number;
+  cliente?: any;
+  funcionario?: any;
 }
 
-export const updateServicos = async (id:number, dados: Partial<Servico>): Promise<Servico> =>{
-    const response = await axios.put(`${API_ENDPOINTS.SERVICOS}/${id}`, dados, {});
-    return response.data;
+export async function getServicos() {
+  const resp = await axios.get<Servico[]>(`${API_BASE}/servicos`);
+  return resp.data;
 }
 
-export const CreateServicos = async (dados: Omit<Servico, "id">): Promise<Servico> =>{
-    const response = await axios.post(API_ENDPOINTS.SERVICOS, dados, {});
-    return response.data;
+// aceitar o payload com campos opcionais
+export async function createServico(payload: ServicoPayload) {
+  const resp = await axios.post<Servico>(`${API_BASE}/servicos`, payload);
+  return resp.data;
+}
+
+// update também recebe payload parcial
+export async function updateServico(id: number, payload: Partial<ServicoPayload>) {
+  const resp = await axios.put<Servico>(`${API_BASE}/servicos/${id}`, payload);
+  return resp.data;
+}
+
+export default {
+  getServicos,
+  createServico,
+  updateServico,
 };

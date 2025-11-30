@@ -3,6 +3,7 @@ export interface Funcionario{
     nome: string;
     telefone: Int16Array;
     email: string;
-    senha: string;
     especialidade: string;
+    CPF: string;
+    senha: string;
 }

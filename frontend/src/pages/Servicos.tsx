@@ -1,9 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
 import { Box, Button, CircularProgress, Typography, Paper } from "@mui/material";
 import CriarServicoModal from "../components/Servico/CriarServicoModal";
 import EditarServicoModal from "../components/Servico/EditarServicoModal";
+import * as servicoService from "../services/servicoService";
+import type { Funcionario } from "../types/funcionario";
+import type { Cliente } from "../types/cliente";
 import type { Servico } from "../types/servico";
+
+type ServicoPayload = {
+  motivo: string;
+  dta_abertura: string;
+  clienteID: number;
+  funcionarioID: number;
+  status?: string | undefined;
+  valor_total?: number | undefined;
+  dta_conclusao?: string | undefined;
+};
 
 export function Servicos() {
   const [servicos, setServicos] = useState<Servico[]>([]);
@@ -13,14 +25,18 @@ export function Servicos() {
   const [openCriar, setOpenCriar] = useState(false);
   const [openEditar, setOpenEditar] = useState(false);
   const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(null);
-  const API_BASE = "http://localhost:3000";
 
   const fetchServicos = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await axios.get<Servico[]>(`${API_BASE}/servicos`);
-      setServicos(resp.data);
+      const data = await servicoService.getServicos();
+      // Normalize data to ensure it matches the frontend Servico type (ensure required 'motivo' exists)
+      const normalized = data.map((d: any) => ({
+        ...d,
+        motivo: d.motivo ?? "",
+      }));
+      setServicos(normalized as Servico[]);
     } catch (err) {
       console.error("Erro ao buscar serviços:", err);
       setError("Não foi possível carregar a lista de serviços. Verifique o servidor backend.");
@@ -33,12 +49,8 @@ export function Servicos() {
     fetchServicos();
   }, [fetchServicos]);
 
-  const handleAbrirCriar = () => {
-    setOpenCriar(true);
-  };
-  const handleFecharCriar = () => {
-    setOpenCriar(false);
-  };
+  const handleAbrirCriar = () => setOpenCriar(true);
+  const handleFecharCriar = () => setOpenCriar(false);
 
   const handleAbrirEditar = (servico: Servico) => {
     setServicoSelecionado(servico);
@@ -55,29 +67,52 @@ export function Servicos() {
     clienteId: number;
     funcionarioId: number;
   }) => {
-    try {
-      await axios.post(`${API_BASE}/servicos`, {
-        dta_abertura: dados.dta_abertura.toISOString(),
-        clienteID: Number(dados.clienteId),
-        funcionarioID: Number(dados.funcionarioId),
-        // se seu backend aceitar, pode incluir "motivo" e "status"/"valor_total"
-        // motivo: dados.motivo,
-      });
-      await fetchServicos();
-    } catch (err) {
-      console.error("Erro ao criar serviço:", err);
-      throw err;
-    }
+    const payload: ServicoPayload = {
+      motivo: dados.motivo,
+      dta_abertura: dados.dta_abertura.toISOString(),
+      clienteID: Number(dados.clienteId),
+      funcionarioID: Number(dados.funcionarioId),
+    };
+    await servicoService.createServico(payload);
+    await fetchServicos();
   };
 
   const handleEditarSalvar = async (id: number, dados: Partial<Servico>) => {
-    try {
-      await axios.put(`${API_BASE}/servicos/${id}`, dados);
-      await fetchServicos();
-    } catch (err) {
-      console.error("Erro ao atualizar serviço:", err);
-      throw err;
+    const toNumber = (v: any): number | undefined => {
+      if (v === undefined || v === null) return undefined;
+      if (typeof v === "number") return v;
+      if (typeof v === "string") {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : undefined;
+      }
+      // handle Array and TypedArray (e.g. Float32Array)
+      if (Array.isArray(v) && v.length > 0) {
+        const n = Number(v[0]);
+        return Number.isFinite(n) ? n : undefined;
+      }
+      if (ArrayBuffer.isView(v) && (v as any).length > 0) {
+        const n = Number((v as any)[0]);
+        return Number.isFinite(n) ? n : undefined;
+      }
+      return undefined;
+    };
+
+    const payload: Partial<ServicoPayload> = {
+      status: dados.status,
+      valor_total: toNumber(dados.valor_total),
+      clienteID: dados.cliente ? Number((dados.cliente as Cliente).id) : undefined,
+      funcionarioID: dados.funcionario ? Number((dados.funcionario as Funcionario).id) : undefined,
+    };
+
+    if (dados.dta_conclusao !== undefined && dados.dta_conclusao !== null) {
+      payload.dta_conclusao =
+        typeof dados.dta_conclusao === "string"
+          ? dados.dta_conclusao
+          : (dados.dta_conclusao as Date).toISOString();
     }
+
+    await servicoService.updateServico(id, payload);
+    await fetchServicos();
   };
 
   if (loading) {
