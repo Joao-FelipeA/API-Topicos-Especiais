@@ -10,7 +10,7 @@ export class FuncionarioService {
     return prisma.funcionario.findUnique({ where: { id } });
   }
 
-  async criar(dados: {nome: string, telefone: number, email: string, especialidade: string}): Promise<Funcionario> {
+  async criar(dados: {nome: string, CPF: string, senha: string, telefone: number, email: string, especialidade: string}): Promise<Funcionario> {
     return prisma.funcionario.create({ data: dados });
   }
 

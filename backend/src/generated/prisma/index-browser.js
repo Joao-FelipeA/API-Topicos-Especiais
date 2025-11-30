@@ -144,7 +144,9 @@ exports.Prisma.FuncionarioScalarFieldEnum = {
   nome: 'nome',
   telefone: 'telefone',
   email: 'email',
-  especialidade: 'especialidade'
+  especialidade: 'especialidade',
+  CPF: 'CPF',
+  senha: 'senha'
 };
 
 exports.Prisma.SortOrder = {

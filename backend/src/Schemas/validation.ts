@@ -18,8 +18,9 @@ export const createFuncionarioSchema = z.object({
     typeof val === 'string' ? parseInt(val, 10) : val
     ),
     email: z.string().email("Insira um formato de email valido"),
-    especialidade: z.string().min(3, "Especialidade é obrigatorio")
-
+    especialidade: z.string().min(3, "Especialidade é obrigatorio"),
+    CPF: z.string().min(11, "CPF deve ter 11 dígitos"),
+    senha: z.string().min(6, "Senha deve ter ao menos 6 caracteres")
 });
 
 export const updateFuncionarioSchema = createFuncionarioSchema.partial();

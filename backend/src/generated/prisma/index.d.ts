@@ -3390,6 +3390,8 @@ export namespace Prisma {
     telefone: number | null
     email: string | null
     especialidade: string | null
+    CPF: string | null
+    senha: string | null
   }
 
   export type FuncionarioMaxAggregateOutputType = {
@@ -3398,6 +3400,8 @@ export namespace Prisma {
     telefone: number | null
     email: string | null
     especialidade: string | null
+    CPF: string | null
+    senha: string | null
   }
 
   export type FuncionarioCountAggregateOutputType = {
@@ -3406,6 +3410,8 @@ export namespace Prisma {
     telefone: number
     email: number
     especialidade: number
+    CPF: number
+    senha: number
     _all: number
   }
 
@@ -3426,6 +3432,8 @@ export namespace Prisma {
     telefone?: true
     email?: true
     especialidade?: true
+    CPF?: true
+    senha?: true
   }
 
   export type FuncionarioMaxAggregateInputType = {
@@ -3434,6 +3442,8 @@ export namespace Prisma {
     telefone?: true
     email?: true
     especialidade?: true
+    CPF?: true
+    senha?: true
   }
 
   export type FuncionarioCountAggregateInputType = {
@@ -3442,6 +3452,8 @@ export namespace Prisma {
     telefone?: true
     email?: true
     especialidade?: true
+    CPF?: true
+    senha?: true
     _all?: true
   }
 
@@ -3537,6 +3549,8 @@ export namespace Prisma {
     telefone: number
     email: string
     especialidade: string
+    CPF: string
+    senha: string
     _count: FuncionarioCountAggregateOutputType | null
     _avg: FuncionarioAvgAggregateOutputType | null
     _sum: FuncionarioSumAggregateOutputType | null
@@ -3564,6 +3578,8 @@ export namespace Prisma {
     telefone?: boolean
     email?: boolean
     especialidade?: boolean
+    CPF?: boolean
+    senha?: boolean
     servicos?: boolean | Funcionario$servicosArgs<ExtArgs>
     _count?: boolean | FuncionarioCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["funcionario"]>
@@ -3574,6 +3590,8 @@ export namespace Prisma {
     telefone?: boolean
     email?: boolean
     especialidade?: boolean
+    CPF?: boolean
+    senha?: boolean
   }, ExtArgs["result"]["funcionario"]>
 
   export type FuncionarioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3582,6 +3600,8 @@ export namespace Prisma {
     telefone?: boolean
     email?: boolean
     especialidade?: boolean
+    CPF?: boolean
+    senha?: boolean
   }, ExtArgs["result"]["funcionario"]>
 
   export type FuncionarioSelectScalar = {
@@ -3590,9 +3610,11 @@ export namespace Prisma {
     telefone?: boolean
     email?: boolean
     especialidade?: boolean
+    CPF?: boolean
+    senha?: boolean
   }
 
-  export type FuncionarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "telefone" | "email" | "especialidade", ExtArgs["result"]["funcionario"]>
+  export type FuncionarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "telefone" | "email" | "especialidade" | "CPF" | "senha", ExtArgs["result"]["funcionario"]>
   export type FuncionarioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     servicos?: boolean | Funcionario$servicosArgs<ExtArgs>
     _count?: boolean | FuncionarioCountOutputTypeDefaultArgs<ExtArgs>
@@ -3611,6 +3633,8 @@ export namespace Prisma {
       telefone: number
       email: string
       especialidade: string
+      CPF: string
+      senha: string
     }, ExtArgs["result"]["funcionario"]>
     composites: {}
   }
@@ -4040,6 +4064,8 @@ export namespace Prisma {
     readonly telefone: FieldRef<"Funcionario", 'Int'>
     readonly email: FieldRef<"Funcionario", 'String'>
     readonly especialidade: FieldRef<"Funcionario", 'String'>
+    readonly CPF: FieldRef<"Funcionario", 'String'>
+    readonly senha: FieldRef<"Funcionario", 'String'>
   }
     
 
@@ -4514,7 +4540,9 @@ export namespace Prisma {
     nome: 'nome',
     telefone: 'telefone',
     email: 'email',
-    especialidade: 'especialidade'
+    especialidade: 'especialidade',
+    CPF: 'CPF',
+    senha: 'senha'
   };
 
   export type FuncionarioScalarFieldEnum = (typeof FuncionarioScalarFieldEnum)[keyof typeof FuncionarioScalarFieldEnum]
@@ -4749,6 +4777,8 @@ export namespace Prisma {
     telefone?: IntFilter<"Funcionario"> | number
     email?: StringFilter<"Funcionario"> | string
     especialidade?: StringFilter<"Funcionario"> | string
+    CPF?: StringFilter<"Funcionario"> | string
+    senha?: StringFilter<"Funcionario"> | string
     servicos?: ServicoListRelationFilter
   }
 
@@ -4758,6 +4788,8 @@ export namespace Prisma {
     telefone?: SortOrder
     email?: SortOrder
     especialidade?: SortOrder
+    CPF?: SortOrder
+    senha?: SortOrder
     servicos?: ServicoOrderByRelationAggregateInput
   }
 
@@ -4770,6 +4802,8 @@ export namespace Prisma {
     telefone?: IntFilter<"Funcionario"> | number
     email?: StringFilter<"Funcionario"> | string
     especialidade?: StringFilter<"Funcionario"> | string
+    CPF?: StringFilter<"Funcionario"> | string
+    senha?: StringFilter<"Funcionario"> | string
     servicos?: ServicoListRelationFilter
   }, "id">
 
@@ -4779,6 +4813,8 @@ export namespace Prisma {
     telefone?: SortOrder
     email?: SortOrder
     especialidade?: SortOrder
+    CPF?: SortOrder
+    senha?: SortOrder
     _count?: FuncionarioCountOrderByAggregateInput
     _avg?: FuncionarioAvgOrderByAggregateInput
     _max?: FuncionarioMaxOrderByAggregateInput
@@ -4795,6 +4831,8 @@ export namespace Prisma {
     telefone?: IntWithAggregatesFilter<"Funcionario"> | number
     email?: StringWithAggregatesFilter<"Funcionario"> | string
     especialidade?: StringWithAggregatesFilter<"Funcionario"> | string
+    CPF?: StringWithAggregatesFilter<"Funcionario"> | string
+    senha?: StringWithAggregatesFilter<"Funcionario"> | string
   }
 
   export type ClienteCreateInput = {
@@ -4931,6 +4969,8 @@ export namespace Prisma {
     telefone: number
     email: string
     especialidade: string
+    CPF: string
+    senha: string
     servicos?: ServicoCreateNestedManyWithoutFuncionarioInput
   }
 
@@ -4940,6 +4980,8 @@ export namespace Prisma {
     telefone: number
     email: string
     especialidade: string
+    CPF: string
+    senha: string
     servicos?: ServicoUncheckedCreateNestedManyWithoutFuncionarioInput
   }
 
@@ -4948,6 +4990,8 @@ export namespace Prisma {
     telefone?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     especialidade?: StringFieldUpdateOperationsInput | string
+    CPF?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
     servicos?: ServicoUpdateManyWithoutFuncionarioNestedInput
   }
 
@@ -4957,6 +5001,8 @@ export namespace Prisma {
     telefone?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     especialidade?: StringFieldUpdateOperationsInput | string
+    CPF?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
     servicos?: ServicoUncheckedUpdateManyWithoutFuncionarioNestedInput
   }
 
@@ -4966,6 +5012,8 @@ export namespace Prisma {
     telefone: number
     email: string
     especialidade: string
+    CPF: string
+    senha: string
   }
 
   export type FuncionarioUpdateManyMutationInput = {
@@ -4973,6 +5021,8 @@ export namespace Prisma {
     telefone?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     especialidade?: StringFieldUpdateOperationsInput | string
+    CPF?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
   }
 
   export type FuncionarioUncheckedUpdateManyInput = {
@@ -4981,6 +5031,8 @@ export namespace Prisma {
     telefone?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     especialidade?: StringFieldUpdateOperationsInput | string
+    CPF?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -5265,6 +5317,8 @@ export namespace Prisma {
     telefone?: SortOrder
     email?: SortOrder
     especialidade?: SortOrder
+    CPF?: SortOrder
+    senha?: SortOrder
   }
 
   export type FuncionarioAvgOrderByAggregateInput = {
@@ -5278,6 +5332,8 @@ export namespace Prisma {
     telefone?: SortOrder
     email?: SortOrder
     especialidade?: SortOrder
+    CPF?: SortOrder
+    senha?: SortOrder
   }
 
   export type FuncionarioMinOrderByAggregateInput = {
@@ -5286,6 +5342,8 @@ export namespace Prisma {
     telefone?: SortOrder
     email?: SortOrder
     especialidade?: SortOrder
+    CPF?: SortOrder
+    senha?: SortOrder
   }
 
   export type FuncionarioSumOrderByAggregateInput = {
@@ -5697,6 +5755,8 @@ export namespace Prisma {
     telefone: number
     email: string
     especialidade: string
+    CPF: string
+    senha: string
   }
 
   export type FuncionarioUncheckedCreateWithoutServicosInput = {
@@ -5705,6 +5765,8 @@ export namespace Prisma {
     telefone: number
     email: string
     especialidade: string
+    CPF: string
+    senha: string
   }
 
   export type FuncionarioCreateOrConnectWithoutServicosInput = {
@@ -5756,6 +5818,8 @@ export namespace Prisma {
     telefone?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     especialidade?: StringFieldUpdateOperationsInput | string
+    CPF?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
   }
 
   export type FuncionarioUncheckedUpdateWithoutServicosInput = {
@@ -5764,6 +5828,8 @@ export namespace Prisma {
     telefone?: IntFieldUpdateOperationsInput | number
     email?: StringFieldUpdateOperationsInput | string
     especialidade?: StringFieldUpdateOperationsInput | string
+    CPF?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
   }
 
   export type ServicoCreateWithoutFuncionarioInput = {

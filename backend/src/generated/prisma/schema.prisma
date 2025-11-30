@@ -47,6 +47,8 @@ model Funcionario {
   telefone      Int
   email         String
   especialidade String
+  CPF           String
+  senha         String
   servicos      Servico[]
 
   @@map("funcionarios")

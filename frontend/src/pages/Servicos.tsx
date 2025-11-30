@@ -1,97 +1,167 @@
-import React, { useState, useEffect } from 'react';
-// Certifique-se de que o 'axios' está instalado (npm install axios)
-import axios from 'axios'; 
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import { Box, Button, CircularProgress, Typography, Paper } from "@mui/material";
+import CriarServicoModal from "../components/Servico/CriarServicoModal";
+import EditarServicoModal from "../components/Servico/EditarServicoModal";
+import type { Servico } from "../types/servico";
 
-// --- 1. Definição de Tipos (Interface) para os Dados Recebidos ---
-// Estes tipos refletem o que sua API retorna (Servico com Cliente e Funcionario)
-interface Cliente {
-    nome: string;
-    email: string;
-}
-
-interface Funcionario {
-    nome: string;
-    especialidade: string;
-}
-
-interface Servico {
-    id: number;
-    dta_abertura: string;
-    dta_conclusao: string | null;
-    status: string;
-    valor_total: number;
-    // As propriedades abaixo vêm do 'include' que configuramos no backend
-    cliente: Cliente;
-    funcionario: Funcionario;
-}
-
-// --- 2. Componente de Página Servicos ---
 export function Servicos() {
-    const [servicos, setServicos] = useState<Servico[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  const [servicos, setServicos] = useState<Servico[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        async function fetchServicos() {
-            try {
-                // ATENÇÃO: Substitua 'http://localhost:3000' pela URL base da sua API backend
-                const API_URL = 'http://localhost:3000/servicos'; 
-                
-                const response = await axios.get<Servico[]>(API_URL); 
-                setServicos(response.data);
-                setLoading(false);
-            } catch (err) {
-                console.error("Erro ao buscar serviços:", err);
-                setError("Não foi possível carregar a lista de serviços. Verifique se o servidor backend está ativo.");
-                setLoading(false);
-            }
-        }
+  const [openCriar, setOpenCriar] = useState(false);
+  const [openEditar, setOpenEditar] = useState(false);
+  const [servicoSelecionado, setServicoSelecionado] = useState<Servico | null>(null);
+  const API_BASE = "http://localhost:3000";
 
-        fetchServicos();
-    }, []);
-
-    // --- 3. Renderização de Estado ---
-    if (loading) {
-        return <div style={{ padding: '20px', fontSize: '18px' }}>Carregando serviços...</div>;
+  const fetchServicos = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await axios.get<Servico[]>(`${API_BASE}/servicos`);
+      setServicos(resp.data);
+    } catch (err) {
+      console.error("Erro ao buscar serviços:", err);
+      setError("Não foi possível carregar a lista de serviços. Verifique o servidor backend.");
+    } finally {
+      setLoading(false);
     }
+  }, []);
 
-    if (error) {
-        return <div style={{ color: 'red', padding: '20px', fontSize: '18px' }}>Erro: {error}</div>;
+  useEffect(() => {
+    fetchServicos();
+  }, [fetchServicos]);
+
+  const handleAbrirCriar = () => {
+    setOpenCriar(true);
+  };
+  const handleFecharCriar = () => {
+    setOpenCriar(false);
+  };
+
+  const handleAbrirEditar = (servico: Servico) => {
+    setServicoSelecionado(servico);
+    setOpenEditar(true);
+  };
+  const handleFecharEditar = () => {
+    setServicoSelecionado(null);
+    setOpenEditar(false);
+  };
+
+  const handleCriarSalvar = async (dados: {
+    motivo: string;
+    dta_abertura: Date;
+    clienteId: number;
+    funcionarioId: number;
+  }) => {
+    try {
+      await axios.post(`${API_BASE}/servicos`, {
+        dta_abertura: dados.dta_abertura.toISOString(),
+        clienteID: Number(dados.clienteId),
+        funcionarioID: Number(dados.funcionarioId),
+        // se seu backend aceitar, pode incluir "motivo" e "status"/"valor_total"
+        // motivo: dados.motivo,
+      });
+      await fetchServicos();
+    } catch (err) {
+      console.error("Erro ao criar serviço:", err);
+      throw err;
     }
+  };
 
-    // --- 4. Renderização da Tabela de Serviços ---
+  const handleEditarSalvar = async (id: number, dados: Partial<Servico>) => {
+    try {
+      await axios.put(`${API_BASE}/servicos/${id}`, dados);
+      await fetchServicos();
+    } catch (err) {
+      console.error("Erro ao atualizar serviço:", err);
+      throw err;
+    }
+  };
+
+  if (loading) {
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>Lista de Serviços</h1>
-            
-            {servicos.length === 0 ? (
-                <p>Nenhum serviço encontrado no momento. Certifique-se de que há dados no banco.</p>
-            ) : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', border: '1px solid #ccc' }}>
-                    <thead style={{ backgroundColor: '#f4f4f4' }}>
-                        <tr>
-                            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #ccc' }}>ID</th>
-                            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #ccc' }}>Status</th>
-                            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #ccc' }}>Data Abertura</th>
-                            <th style={{ padding: '12px', textAlign: 'right', border: '1px solid #ccc' }}>Valor Total</th>
-                            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #ccc' }}>Cliente</th>
-                            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #ccc' }}>Funcionário</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {servicos.map((servico) => (
-                            <tr key={servico.id} style={{ borderBottom: '1px solid #eee' }}>
-                                <td style={{ padding: '12px', border: '1px solid #ccc' }}>{servico.id}</td>
-                                <td style={{ padding: '12px', border: '1px solid #ccc' }}>{servico.status}</td>
-                                <td style={{ padding: '12px', border: '1px solid #ccc' }}>{new Date(servico.dta_abertura).toLocaleDateString()}</td>
-                                <td style={{ padding: '12px', textAlign: 'right', border: '1px solid #ccc' }}>R$ {servico.valor_total.toFixed(2)}</td>
-                                <td style={{ padding: '12px', border: '1px solid #ccc' }}>{servico.cliente.nome}</td>
-                                <td style={{ padding: '12px', border: '1px solid #ccc' }}>{servico.funcionario.nome} ({servico.funcionario.especialidade})</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
-        </div>
+      <Box p={3} textAlign="center">
+        <CircularProgress />
+        <Typography mt={2}>Carregando serviços...</Typography>
+      </Box>
     );
+  }
+
+  if (error) {
+    return (
+      <Box p={3}>
+        <Typography color="error">{error}</Typography>
+        <Box mt={2}>
+          <Button variant="contained" onClick={fetchServicos}>
+            Tentar novamente
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
+  return (
+    <Box p={3}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h4">Lista de Serviços</Typography>
+        <Button variant="contained" onClick={handleAbrirCriar}>
+          Novo Serviço
+        </Button>
+      </Box>
+
+      {servicos.length === 0 ? (
+        <Typography>Nenhum serviço encontrado no momento.</Typography>
+      ) : (
+        <Box component={Paper} p={2}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead style={{ backgroundColor: "#f4f4f4" }}>
+              <tr>
+                <th style={{ padding: "8px", textAlign: "left" }}>ID</th>
+                <th style={{ padding: "8px", textAlign: "left" }}>Status</th>
+                <th style={{ padding: "8px", textAlign: "left" }}>Data Abertura</th>
+                <th style={{ padding: "8px", textAlign: "right" }}>Valor</th>
+                <th style={{ padding: "8px", textAlign: "left" }}>Cliente</th>
+                <th style={{ padding: "8px", textAlign: "left" }}>Funcionário</th>
+                <th style={{ padding: "8px", textAlign: "center" }}>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {servicos.map((s) => (
+                <tr key={s.id} style={{ borderBottom: "1px solid #eee" }}>
+                  <td style={{ padding: "8px" }}>{s.id}</td>
+                  <td style={{ padding: "8px" }}>{s.status}</td>
+                  <td style={{ padding: "8px" }}>
+                    {new Date(s.dta_abertura).toLocaleString()}
+                  </td>
+                  <td style={{ padding: "8px", textAlign: "right" }}>
+                    R$ {Number(s.valor_total ?? 0).toFixed(2)}
+                  </td>
+                  <td style={{ padding: "8px" }}>{s.cliente?.nome ?? "—"}</td>
+                  <td style={{ padding: "8px" }}>
+                    {s.funcionario ? `${s.funcionario.nome} (${s.funcionario.especialidade ?? "—"})` : "—"}
+                  </td>
+                  <td style={{ padding: "8px", textAlign: "center" }}>
+                    <Button size="small" variant="outlined" onClick={() => handleAbrirEditar(s)}>
+                      Editar
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Box>
+      )}
+
+      <CriarServicoModal open={openCriar} onClose={handleFecharCriar} onSave={handleCriarSalvar} />
+
+      <EditarServicoModal
+        open={openEditar}
+        onClose={handleFecharEditar}
+        servico={servicoSelecionado}
+        onSave={handleEditarSalvar}
+      />
+    </Box>
+  );
 }

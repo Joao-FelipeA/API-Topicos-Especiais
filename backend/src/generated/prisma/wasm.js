@@ -116,7 +116,9 @@ exports.Prisma.FuncionarioScalarFieldEnum = {
   nome: 'nome',
   telefone: 'telefone',
   email: 'email',
-  especialidade: 'especialidade'
+  especialidade: 'especialidade',
+  CPF: 'CPF',
+  senha: 'senha'
 };
 
 exports.Prisma.SortOrder = {
@@ -151,7 +153,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\Trabalho Topico especial\\API-Topicos-Especiais\\src\\generated\\prisma",
+      "value": "E:\\Trabalho Topico especial\\API-Topicos-Especiais\\backend\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -165,7 +167,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\Trabalho Topico especial\\API-Topicos-Especiais\\prisma\\schema.prisma",
+    "sourceFilePath": "E:\\Trabalho Topico especial\\API-Topicos-Especiais\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -187,13 +189,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Cliente {\n  id       Int       @id @default(autoincrement())\n  nome     String\n  CPF      String\n  CNPJ     String?\n  email    String\n  telefone Int\n  servicos Servico[]\n\n  @@map(\"clientes\")\n}\n\nmodel Servico {\n  id            Int       @id @default(autoincrement())\n  dta_abertura  DateTime  @default(now())\n  dta_conclusao DateTime?\n  status        String\n  valor_total   Float\n  clienteID     Int\n  funcionarioID Int\n\n  cliente     Cliente     @relation(fields: [clienteID], references: [id])\n  funcionario Funcionario @relation(fields: [funcionarioID], references: [id])\n\n  @@map(\"servicos\")\n}\n\nmodel Funcionario {\n  id            Int       @id @default(autoincrement())\n  nome          String\n  telefone      Int\n  email         String\n  especialidade String\n  servicos      Servico[]\n\n  @@map(\"funcionarios\")\n}\n",
-  "inlineSchemaHash": "5e37120ff025d24573cd44c2fb318e6290ad367a9e05d967cdc14a7779764a1f",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Cliente {\n  id       Int       @id @default(autoincrement())\n  nome     String\n  CPF      String\n  CNPJ     String?\n  email    String\n  telefone Int\n  servicos Servico[]\n\n  @@map(\"clientes\")\n}\n\nmodel Servico {\n  id            Int       @id @default(autoincrement())\n  dta_abertura  DateTime  @default(now())\n  dta_conclusao DateTime?\n  status        String\n  valor_total   Float\n  clienteID     Int\n  funcionarioID Int\n\n  cliente     Cliente     @relation(fields: [clienteID], references: [id])\n  funcionario Funcionario @relation(fields: [funcionarioID], references: [id])\n\n  @@map(\"servicos\")\n}\n\nmodel Funcionario {\n  id            Int       @id @default(autoincrement())\n  nome          String\n  telefone      Int\n  email         String\n  especialidade String\n  CPF           String\n  senha         String\n  servicos      Servico[]\n\n  @@map(\"funcionarios\")\n}\n",
+  "inlineSchemaHash": "2878954bc081d359b26dd3815d0865357aa3b957f57b65327951bf2fe18cdfa5",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Cliente\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"CPF\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"CNPJ\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"telefone\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"servicos\",\"kind\":\"object\",\"type\":\"Servico\",\"relationName\":\"ClienteToServico\"}],\"dbName\":\"clientes\"},\"Servico\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"dta_abertura\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"dta_conclusao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"valor_total\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"clienteID\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"funcionarioID\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"cliente\",\"kind\":\"object\",\"type\":\"Cliente\",\"relationName\":\"ClienteToServico\"},{\"name\":\"funcionario\",\"kind\":\"object\",\"type\":\"Funcionario\",\"relationName\":\"FuncionarioToServico\"}],\"dbName\":\"servicos\"},\"Funcionario\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"telefone\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"especialidade\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"servicos\",\"kind\":\"object\",\"type\":\"Servico\",\"relationName\":\"FuncionarioToServico\"}],\"dbName\":\"funcionarios\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Cliente\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"CPF\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"CNPJ\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"telefone\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"servicos\",\"kind\":\"object\",\"type\":\"Servico\",\"relationName\":\"ClienteToServico\"}],\"dbName\":\"clientes\"},\"Servico\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"dta_abertura\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"dta_conclusao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"valor_total\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"clienteID\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"funcionarioID\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"cliente\",\"kind\":\"object\",\"type\":\"Cliente\",\"relationName\":\"ClienteToServico\"},{\"name\":\"funcionario\",\"kind\":\"object\",\"type\":\"Funcionario\",\"relationName\":\"FuncionarioToServico\"}],\"dbName\":\"servicos\"},\"Funcionario\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"telefone\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"especialidade\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"CPF\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"senha\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"servicos\",\"kind\":\"object\",\"type\":\"Servico\",\"relationName\":\"FuncionarioToServico\"}],\"dbName\":\"funcionarios\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
