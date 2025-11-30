@@ -88,23 +88,25 @@ const Login: React.FC = () => {
         }
       );
 
-      // Axios automaticamente trata HTTP 200-299 como sucesso
       const data = response.data;
       setSuccess(data.message || "Login realizado com sucesso!");
     } catch (error) {
-      // Axios automaticamente trata códigos de erro como exceção
       if (axios.isAxiosError(error)) {
-        // Erro HTTP (400, 401, 403, 500, etc.)
-        const errorMessage =
-          error.response?.data?.message ||
-          `Erro ${error.response?.status}: ${error.response?.statusText}`;
-        setError(errorMessage);
+        if (error.response) {
+          const errorMessage =
+            error.response.data?.message ||
+            `Erro ${error.response.status}: Falha ao realizar login.`;
+          setError(errorMessage);
+        } 
+        else if (error.request) {
+          setError("Erro de conexão: Não foi possível contatar o servidor. Verifique se o backend (porta 3333) está rodando.");
+        } 
+        else {
+          setError(`Erro ao configurar a requisição: ${error.message}`);
+        }
       } else {
-        // Erro de rede ou outros
         const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Erro de conexão. Verifique se o servidor está rodando.";
+          error instanceof Error ? error.message : "Ocorreu um erro desconhecido.";
         setError(errorMessage);
       }
     } finally {
