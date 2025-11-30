@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography, Alert, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import authService from "../services/loginService";
+import axios from "axios";
+
+interface LoginResponse {
+  message: string;
+  token?: string;
+  user?: Funcionario; 
+}
 
 interface Funcionario {
   id: number;
@@ -15,7 +21,7 @@ interface Funcionario {
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [senha, setSenha] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [funcionario, setFuncionario] = useState<Funcionario | null>(null);
@@ -26,33 +32,37 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     setLoading(true);
+    setFuncionario(null); 
+
     try {
       const response = await axios.post<LoginResponse>(
-        "http://localhost:3333/login",
+        "http://localhost:3333/login", 
         {
-          email,
-          password,
+          email: email,
+          password: senha, 
         }
       );
 
-      // Axios automaticamente trata HTTP 200-299 como sucesso
       const data = response.data;
-      setSuccess(data.message || "Login realizado com sucesso!");
-    } catch (error) {
-      // Axios automaticamente trata códigos de erro como exceção
-      if (axios.isAxiosError(error)) {
-        // Erro HTTP (400, 401, 403, 500, etc.)
-        const errorMessage =
-          error.response?.data?.message ||
-          `Erro ${error.response?.status}: ${error.response?.statusText}`;
-        setError(errorMessage);
+      // Se o login der certo, salva os dados do funcionário para mostrar
+      if (data.user) {
+          setFuncionario(data.user);
       } else {
-        // Erro de rede ou outros
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Erro de conexão. Verifique se o servidor está rodando.";
-        setError(errorMessage);
+          //se não devolva o objeto 'user' completo, apenas logamos
+          console.log("sem dados", data);
+      }
+
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          setError(error.response.data?.message || `Erro ${error.response.status}`);
+        } else if (error.request) {
+          setError("Servidor não respondeu");
+        } else {
+          setError(`Erro na requisição: ${error.message}`);
+        }
+      } else {
+        setError("Ocorreu um erro desconhecido.");
       }
     } finally {
       setLoading(false);
@@ -93,14 +103,14 @@ export default function LoginPage() {
       </form>
 
       {funcionario && (
-        <Box mt={3} p={2} sx={{ background: "#fafafa", borderRadius: 1 }}>
-          <Typography variant="subtitle1">Funcionário autenticado:</Typography>
-          <Typography>ID: {funcionario.id}</Typography>
-          <Typography>Nome: {funcionario.nome}</Typography>
-          <Typography>Email: {funcionario.email ?? "—"}</Typography>
-          <Typography>Telefone: {funcionario.telefone ?? "—"}</Typography>
-          <Typography>Especialidade: {funcionario.especialidade ?? "—"}</Typography>
-          <Typography>CPF: {funcionario.CPF ?? "—"}</Typography>
+        <Box mt={3} p={2} sx={{ background: "#fafafa", borderRadius: 1, border: "1px solid #ddd" }}>
+          <Typography variant="subtitle1" fontWeight="bold" color="success.main">
+            Login realizado com sucesso!
+          </Typography>
+          <Typography variant="body2" mt={1}><strong>ID:</strong> {funcionario.id}</Typography>
+          <Typography variant="body2"><strong>Nome:</strong> {funcionario.nome}</Typography>
+          <Typography variant="body2"><strong>Email:</strong> {funcionario.email ?? "—"}</Typography>
+          <Typography variant="body2"><strong>Especialidade:</strong> {funcionario.especialidade ?? "—"}</Typography>
         </Box>
       )}
     </Box>
