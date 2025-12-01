@@ -7,6 +7,7 @@ import {
 } from "../Schemas/validation";
 import prisma from "../database/prisma";
 import { z } from "zod";
+import jwt from "jsonwebtoken";
 
 const service = new FuncionarioService();
 
@@ -17,12 +18,16 @@ const funcionarioController = {
         include: {
           servicos: {
             select: {
-              id: true
-            }
-          }
-        }
+              id: true,
+            },
+          },
+        },
       });
-      res.status(200).json(funcionarios);
+      const sanitized = funcionarios.map((f) => {
+        const { senha, ...rest } = f as any;
+        return rest;
+      });
+      res.status(200).json(sanitized);
     } catch (error) {
       res.status(500).json({ message: "Erro ao buscar funcionários." });
     }
@@ -43,18 +48,18 @@ const funcionarioController = {
         include: {
           servicos: {
             select: {
-              id: true
-            }
-          }
-        }
+              id: true,
+            },
+          },
+        },
       });
 
       if (!funcionario) {
         res.status(404).json({ message: "Funcionário não encontrado" });
         return;
       }
-
-      res.json(funcionario);
+      const { senha, ...rest } = funcionario as any;
+      res.json(rest);
     } catch (error) {
       res.status(500).json({ message: "Erro ao buscar funcionário." });
     }
@@ -63,7 +68,8 @@ const funcionarioController = {
     try {
       const validatedData = createFuncionarioSchema.parse(req.body);
       const funcionario: Funcionario = await service.criar(validatedData);
-      res.status(201).json(funcionario);
+      const { senha, ...funcSemSenha } = funcionario as any;
+      res.status(201).json(funcSemSenha);
     } catch (error) {
       if (error instanceof z.ZodError) {
         res.status(400).json({
@@ -132,7 +138,38 @@ const funcionarioController = {
     } catch (error) {
       res.status(404).json({ message: "Funcionário não encontrado." });
     }
-  }
-}
+  },
+
+  async buscarPorLogin(req: Request, res: Response) {
+    try {
+      const { email, senha } = req.body;
+      if (!email || !senha) {
+        return res
+          .status(400)
+          .json({ message: "Email e senha são obrigatórios." });
+      }
+      const funcionario = await service.buscarPorLogin(email, senha);
+      if (!funcionario) {
+        return res.status(404).json({ message: "Funcionário não encontrado." });
+      }
+
+      // Gerar token JWT
+      const JWT_SECRET = process.env.JWT_SECRET || "secret_local_dev";
+      const token = jwt.sign(
+        { id: funcionario.id, email: funcionario.email },
+        JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      const { senha: _, ...funcSemSenha } = funcionario as any;
+      res.json({ message: "Autenticado", token, user: funcSemSenha });
+    } catch (error) {
+      console.error("Erro em buscarPorLogin:", error);
+      res
+        .status(500)
+        .json({ message: "Erro interno no servidor.", detail: String(error) });
+    }
+  },
+};
 
 export default funcionarioController;

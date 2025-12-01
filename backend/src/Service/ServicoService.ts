@@ -1,14 +1,19 @@
-import  prisma  from '../database/prisma';
-import { Servico } from '../generated/prisma';
+import prisma from "../database/prisma";
+import { Servico } from "../generated/prisma";
 
-type ServicoCreateData = Omit<Servico, 'id' | 'dta_abertura' | 'dta_conclusao'> & {
+type ServicoCreateData = Omit<
+  Servico,
+  "id" | "dta_abertura" | "dta_conclusao"
+> & {
   dta_abertura?: string | Date;
   dta_conclusao?: string | Date | null;
 };
 
 type ServicoUpdateData = Partial<ServicoCreateData>;
 
-const toDate = (v: string | Date | null | undefined): Date | null | undefined => {
+const toDate = (
+  v: string | Date | null | undefined
+): Date | null | undefined => {
   if (v === null) return null;
   if (v === undefined) return undefined;
   if (v instanceof Date) return v;
@@ -33,24 +38,46 @@ export const create = async (data: ServicoCreateData): Promise<Servico> => {
 
   return prisma.servico.create({
     data: dataComDatasCorretas,
+    include: {
+      cliente: true,
+      funcionario: true,
+    },
   });
 };
 
 export const getAll = async (): Promise<Servico[]> => {
-  return prisma.servico.findMany();
+  return prisma.servico.findMany({
+    include: {
+      cliente: true,
+      funcionario: true,
+    },
+  });
 };
 
 export const getById = async (id: number): Promise<Servico | null> => {
   return prisma.servico.findUnique({
     where: { id },
+    include: {
+      cliente: true,
+      funcionario: true,
+    },
   });
 };
 
-export const update = async (id: number, data: ServicoUpdateData): Promise<Servico> => {
+export const update = async (
+  id: number,
+  data: ServicoUpdateData
+): Promise<Servico> => {
   const dadosParaAtualizar: any = { ...data };
 
-  if (Object.prototype.hasOwnProperty.call(dadosParaAtualizar, 'dta_abertura') && dadosParaAtualizar.dta_abertura !== undefined && dadosParaAtualizar.dta_abertura !== null) {
-    dadosParaAtualizar.dta_abertura = toDate(dadosParaAtualizar.dta_abertura as any) as any;
+  if (
+    Object.prototype.hasOwnProperty.call(dadosParaAtualizar, "dta_abertura") &&
+    dadosParaAtualizar.dta_abertura !== undefined &&
+    dadosParaAtualizar.dta_abertura !== null
+  ) {
+    dadosParaAtualizar.dta_abertura = toDate(
+      dadosParaAtualizar.dta_abertura as any
+    ) as any;
   }
 
   // Se o status está sendo alterado para "concluido", adiciona automaticamente a data de conclusão
@@ -64,6 +91,10 @@ export const update = async (id: number, data: ServicoUpdateData): Promise<Servi
   return prisma.servico.update({
     where: { id },
     data: dadosParaAtualizar,
+    include: {
+      cliente: true,
+      funcionario: true,
+    },
   });
 };
 

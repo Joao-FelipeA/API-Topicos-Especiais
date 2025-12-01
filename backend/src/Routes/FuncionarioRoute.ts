@@ -1,5 +1,5 @@
 import { Router } from "express";
-import funcionarioController  from "../Controller/FuncionarioController";
+import funcionarioController from "../Controller/FuncionarioController";
 
 const router = Router();
 
@@ -41,7 +41,10 @@ const router = Router();
  *       500:
  *         description: Erro no servidor
  */
-router.get("/funcionarios", funcionarioController.listar.bind(funcionarioController));
+router.get(
+  "/funcionarios",
+  funcionarioController.listar.bind(funcionarioController)
+);
 
 /**
  * @swagger
@@ -76,7 +79,10 @@ router.get("/funcionarios", funcionarioController.listar.bind(funcionarioControl
  *       404:
  *         description: Funcionário não encontrado
  */
-router.get("/funcionarios/:id", funcionarioController.buscar.bind(funcionarioController));
+router.get(
+  "/funcionarios/:id",
+  funcionarioController.buscar.bind(funcionarioController)
+);
 
 /**
  * @swagger
@@ -99,8 +105,17 @@ router.get("/funcionarios/:id", funcionarioController.buscar.bind(funcionarioCon
  *                type: string
  *              especialidade:
  *                type: string
+ *              CPF:
+ *                type: string
+ *              senha:
+ *                type: string
  *              servicos:
  *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id:
+ *                      type: integer
  *     responses:
  *       201:
  *        description: Funcionario criado com sucesso
@@ -109,7 +124,10 @@ router.get("/funcionarios/:id", funcionarioController.buscar.bind(funcionarioCon
  *       409:
  *        description: Erro ao criar funcionario
  */
-router.post("/funcionarios", funcionarioController.criar.bind(funcionarioController));
+router.post(
+  "/funcionarios",
+  funcionarioController.criar.bind(funcionarioController)
+);
 
 /**
  * @swagger
@@ -139,17 +157,29 @@ router.post("/funcionarios", funcionarioController.criar.bind(funcionarioControl
  *                type: string
  *              especialidade:
  *                type: string
+ *              CPF:
+ *                type: string
+ *              senha:
+ *                type: string
  *              servicos:
  *                type: array
- *           responses:
- *              200:
- *                description: Funcionario atualizado com sucesso
- *              400:
- *                description: Dados inválidos
- *              404:
- *                description: Funcionario não encontrado
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id:
+ *                      type: integer
+ *     responses:
+ *       200:
+ *         description: Funcionario atualizado com sucesso
+ *       400:
+ *         description: Dados inválidos
+ *       404:
+ *         description: Funcionario não encontrado
  */
-router.put("/funcionarios/:id", funcionarioController.atualizar.bind(funcionarioController));
+router.put(
+  "/funcionarios/:id",
+  funcionarioController.atualizar.bind(funcionarioController)
+);
 
 /**
  * @swagger
@@ -172,6 +202,14 @@ router.put("/funcionarios/:id", funcionarioController.atualizar.bind(funcionario
  *       404:
  *        description: Funcionario não encontrado
  */
-router.delete("/funcionarios/:id", funcionarioController.deletar.bind(funcionarioController));
+router.delete(
+  "/funcionarios/:id",
+  funcionarioController.deletar.bind(funcionarioController)
+);
+
+router.post(
+  "/login",
+  funcionarioController.buscarPorLogin.bind(funcionarioController)
+);
 
 export default router;

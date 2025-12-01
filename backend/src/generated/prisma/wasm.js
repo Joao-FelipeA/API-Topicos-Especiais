@@ -153,7 +153,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\Trabalho Topico especial\\API-Topicos-Especiais\\backend\\src\\generated\\prisma",
+      "value": "C:\\Users\\caleb\\Documents\\Programação\\API-Topicos-Especiais\\backend\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -167,7 +167,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\Trabalho Topico especial\\API-Topicos-Especiais\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\caleb\\Documents\\Programação\\API-Topicos-Especiais\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

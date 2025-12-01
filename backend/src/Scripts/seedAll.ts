@@ -1,0 +1,75 @@
+import prisma from "../database/prisma";
+import { FuncionarioService } from "../Service/FuncionarioService";
+import ClienteService from "../Service/ClienteService";
+import * as servicoService from "../Service/ServicoService";
+
+async function main() {
+  console.log("Iniciando seed...");
+
+  // Limpeza de dados existentes
+  await prisma.servico.deleteMany();
+  await prisma.cliente.deleteMany();
+  await prisma.funcionario.deleteMany();
+
+  const funcionarioService = new FuncionarioService();
+
+  // Criar funcionarios
+  const funcionario1 = await funcionarioService.criar({
+    nome: "Ana Silva",
+    telefone: 1199999000,
+    email: "anasilva@example.com",
+    especialidade: "Eletricista",
+    CPF: "12345678901",
+    senha: "123456",
+  });
+
+  const funcionario2 = await funcionarioService.criar({
+    nome: "João Pereira",
+    telefone: 1188888000,
+    email: "joaopereira@example.com",
+    especialidade: "Encanador",
+    CPF: "10987654321",
+    senha: "123456",
+  });
+
+  // Criar clientes
+  const cliente1 = await ClienteService.createCliente({
+    nome: "Cliente A",
+    CPF: "11122233344",
+    email: "clientea@example.com",
+    telefone: 1191111222,
+  });
+
+  const cliente2 = await ClienteService.createCliente({
+    nome: "Cliente B",
+    CPF: "55566677788",
+    email: "clienteb@example.com",
+    telefone: 1193333444,
+  });
+
+  // Criar serviços
+  await servicoService.create({
+    status: "aberto",
+    valor_total: 150.5,
+    clienteID: cliente1.id,
+    funcionarioID: funcionario1.id,
+  });
+
+  await servicoService.create({
+    status: "concluido",
+    valor_total: 300,
+    clienteID: cliente2.id,
+    funcionarioID: funcionario2.id,
+  });
+
+  console.log("Seed finalizado.");
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

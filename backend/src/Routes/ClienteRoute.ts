@@ -20,6 +20,11 @@ const router = Router();
  *       200:
  *         description: Lista de clientes com IDs dos serviços associados
  *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Cliente'
  *             example:
  *               - id: 1
  *                 nome: "João Silva"
@@ -56,6 +61,18 @@ router.get("/clientes", clienteController.getClientes);
  *     responses:
  *       200:
  *         description: Cliente encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cliente'
+ *             example:
+ *               id: 1
+ *               nome: "João Silva"
+ *               CPF: "12345678901"
+ *               CNPJ: "12345678000123"
+ *               email: "joao@email.com"
+ *               telefone: 11999999999
+ *               servicos: [{"id": 1}, {"id": 3}]
  *       400:
  *         description: ID inválido
  *       404:
@@ -88,6 +105,11 @@ router.get("/clientes/:id", clienteController.getClientesById);
  *                type: number
  *              servicos:
  *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id:
+ *                      type: integer
  *     responses:
  *       201:
  *        description: Cliente criado com sucesso
@@ -130,13 +152,18 @@ router.post("/clientes", clienteController.createCliente);
  *                type: number
  *              servicos:
  *                type: array
- *           responses:
- *              200:
- *                description: Cliente atualizado com sucesso
- *              400:
- *                description: Dados inválidos
- *              500:
- *                description: Erro no servidor
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    id:
+ *                      type: integer
+ *     responses:
+ *       200:
+ *         description: Cliente atualizado com sucesso
+ *       400:
+ *         description: Dados inválidos
+ *       500:
+ *         description: Erro no servidor
  */
 router.put("/clientes/:id", clienteController.updateCliente);
 

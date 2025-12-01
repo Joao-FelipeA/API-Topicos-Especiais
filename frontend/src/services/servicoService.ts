@@ -1,9 +1,8 @@
 import axios from "axios";
 import type { Servico } from "../types/servico"; // usar o tipo centralizado
+import { API_BASE_URL } from "../config/api";
 
-const API_BASE =
-  (import.meta.env.VITE_API_BASE as string) ||
-  "http://localhost:3000";
+const API_BASE = import.meta.env.VITE_API_BASE || API_BASE_URL;
 
 export type ServicoPayload = {
   motivo?: string;

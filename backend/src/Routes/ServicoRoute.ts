@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as ServicoController from "../Controller/ServicoController";
+import authenticateToken from "../middleware/auth";
 
 const router = Router();
 
@@ -19,10 +20,27 @@ const router = Router();
  *      responses:
  *        200:
  *         description: Lista de servicos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Servico'
+ *             example:
+ *               - id: 1
+ *                 status: "aberto"
+ *                 valor_total: 150.5
+ *                 clienteID: 1
+ *                 funcionarioID: 2
+ *               - id: 2
+ *                 status: "concluido"
+ *                 valor_total: 300
+ *                 clienteID: 2
+ *                 funcionarioID: 1
  *        500:
  *         description: Erro no servidor
  */
-router.get("/servicos", ServicoController.getAllServicos);
+router.get("/servicos", authenticateToken, ServicoController.getAllServicos);
 
 // router.get("/servicos/opcoes", ServicoController.getOpcoesParaServico); SEM USO
 
@@ -42,12 +60,26 @@ router.get("/servicos", ServicoController.getAllServicos);
  *     responses:
  *       200:
  *         description: Servico encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Servico'
+ *             example:
+ *               id: 1
+ *               status: "aberto"
+ *               valor_total: 150.5
+ *               clienteID: 1
+ *               funcionarioID: 2
  *       400:
  *         description: ID inválido
  *       404:
  *         description: Servico não encontrado
  */
-router.get("/servicos/:id", ServicoController.getServicoById);
+router.get(
+  "/servicos/:id",
+  authenticateToken,
+  ServicoController.getServicoById
+);
 
 /**
  * @swagger
@@ -70,17 +102,18 @@ router.get("/servicos/:id", ServicoController.getServicoById);
  *                type: integer
  *              funcionarioID:
  *                type: integer
+ *              dta_conclusao:
+ *                type: string
+ *                format: date-time
  *     responses:
  *       201:
  *        description: Servico criado com sucesso
  *       400:
  *        description: Dados inválidos
- *       404:
- *        description: Servico não encontrado
  *       500:
  *        description: Erro no servidor
  */
-router.post("/servicos", ServicoController.createServico);
+router.post("/servicos", authenticateToken, ServicoController.createServico);
 
 /**
  * @swagger
@@ -110,17 +143,20 @@ router.post("/servicos", ServicoController.createServico);
  *                type: integer
  *              funcionarioID:
  *                type: integer
- *            responses:
- *              200:
- *                description: Servico atualizado com sucesso
- *              400:
- *                description: Dados inválidos
- *              404:
- *                description: Servico não encontrado
- *              500:
- *                description: Erro no servidor
+ *              dta_conclusao:
+ *                type: string
+ *                format: date-time
+ *     responses:
+ *       200:
+ *         description: Servico atualizado com sucesso
+ *       400:
+ *         description: Dados inválidos
+ *       404:
+ *         description: Servico não encontrado
+ *       500:
+ *         description: Erro no servidor
  */
-router.put("/servicos/:id", ServicoController.updateServico);
+router.put("/servicos/:id", authenticateToken, ServicoController.updateServico);
 
 /**
  * @swagger
@@ -145,6 +181,10 @@ router.put("/servicos/:id", ServicoController.updateServico);
  *       500:
  *        description: Erro no servidor
  */
-router.delete("/servicos/:id", ServicoController.deleteServico);
+router.delete(
+  "/servicos/:id",
+  authenticateToken,
+  ServicoController.deleteServico
+);
 
 export default router;
