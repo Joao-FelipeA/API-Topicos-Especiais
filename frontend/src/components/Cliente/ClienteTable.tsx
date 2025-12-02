@@ -1,5 +1,4 @@
-// ...existing code...
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import clienteService from "../../services/clienteService";
 import type { Cliente } from "../../types/cliente";
 
