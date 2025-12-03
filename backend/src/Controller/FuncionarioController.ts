@@ -23,7 +23,7 @@ const funcionarioController = {
           },
         },
       });
-      const sanitized = funcionarios.map((f) => {
+      const sanitized = funcionarios.map((f: Funcionario) => {
         const { senha, ...rest } = f as any;
         return rest;
       });

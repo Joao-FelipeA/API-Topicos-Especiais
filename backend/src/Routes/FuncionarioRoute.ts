@@ -212,4 +212,56 @@ router.post(
   funcionarioController.buscarPorLogin.bind(funcionarioController)
 );
 
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Realiza o login de um funcionário
+ *     tags: [Funcionarios]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: funcionario@email.com
+ *               senha:
+ *                 type: string
+ *                 example: senha123
+ *     responses:
+ *       200:
+ *         description: Login realizado com sucesso. Retorna token e dados do usuário
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Login realizado com sucesso"
+ *                 token:
+ *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *                 user:
+ *                   $ref: '#/components/schemas/Funcionario'
+ *             example:
+ *               message: "Login realizado com sucesso"
+ *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *               user:
+ *                 id: 1
+ *                 nome: "Maria Santos"
+ *                 email: "maria@email.com"
+ *                 telefone: 11999999999
+ *                 especialidade: "Desenvolvedor"
+ *       400:
+ *         description: Dados inválidos
+ *       401:
+ *         description: Credenciais inválidas
+ *       500:
+ *         description: Erro no servidor
+ */
+
 export default router;
