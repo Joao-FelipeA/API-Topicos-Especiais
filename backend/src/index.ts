@@ -5,23 +5,22 @@ import routes from "./Routes/index";
 import { setupSwagger } from "./swagger";
 
 const app: Express = express();
-const port: number = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
-// Habilitar CORS para desenvolvimento (ajuste em produção)
+
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173"
+
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // permitir todas as origens para dev; em produção especifique a(s) origem(ões)
-      callback(null, true);
-    },
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: CORS_ORIGIN,
+    credentials: true,
   })
 );
 setupSwagger(app);
 app.use(routes);
 
-const server = app.listen(port, () => {
+const server = app.listen(PORT, () => {
   const address = server.address();
   if (address && typeof address === "object") {
     console.log(`🚀 Servidor rodando em: http://localhost:${address.port}`);
