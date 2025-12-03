@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { Box, Button, CircularProgress, Typography, Paper } from "@mui/material";
+import { Box, Button, CircularProgress, Typography, Paper, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 import CriarServicoModal from "../components/Servico/CriarServicoModal";
 import EditarServicoModal from "../components/Servico/EditarServicoModal";
 import * as servicoService from "../services/servicoService";
@@ -18,6 +20,7 @@ type ServicoPayload = {
 };
 
 export function Servicos() {
+  const navigate = useNavigate();
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +34,6 @@ export function Servicos() {
     setError(null);
     try {
       const data = await servicoService.getServicos();
-      // Normalize data to ensure it matches the frontend Servico type (ensure required 'motivo' exists)
       const normalized = data.map((d: any) => ({
         ...d,
         motivo: d.motivo ?? "",
@@ -140,7 +142,15 @@ export function Servicos() {
   return (
     <Box p={3}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h4">Lista de Serviços</Typography>
+        <Box display="flex" alignItems="center">
+          <IconButton onClick={() => navigate(-1)} aria-label="voltar" size="large">
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h4" sx={{ ml: 1 }}>
+            Lista de Serviços
+          </Typography>
+        </Box>
+
         <Button variant="contained" onClick={handleAbrirCriar}>
           Novo Serviço
         </Button>
