@@ -115,6 +115,7 @@ export const ServicoTable = ({
 
   // abre modal de motivo ao clicar na linha
   const handleRowOpen = (s: Servico) => {
+    console.log("handleRowOpen chamado para serviço:", s?.id);
     setOpenServico(s);
     setMotivoOpen(true);
   };
@@ -241,7 +242,7 @@ export const ServicoTable = ({
                 const priorityColor = computePriorityColor(dataVencimento);
                 const priorityLabel = computePriorityLabel(priorityColor as any, dataVencimento);
 
-                return (
+return (
                   <TableRow
                     hover
                     onClick={() => handleRowOpen(s)} // abre modal com motivo
@@ -249,12 +250,13 @@ export const ServicoTable = ({
                     aria-checked={isItemSelected}
                     tabIndex={-1}
                     key={id ?? `row-${idx}`}
-                    selected={isItemSelected}
+                    selected={!!isItemSelected}
+                    sx={{ cursor: "pointer" }} // indica que é clicável
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
-                        checked={isItemSelected}
+                        checked={!!isItemSelected}
                         // evita que o clique no checkbox abra o modal (propagação)
                         onClick={(event) => event.stopPropagation()}
                         onChange={(event) => {
@@ -265,7 +267,10 @@ export const ServicoTable = ({
                       />
                     </TableCell>
                     <TableCell>{id ?? "-"}</TableCell>
-                    <TableCell>
+                    <TableCell
+                      onClick={(e) => { e.stopPropagation(); handleRowOpen(s); }} // garante abrir se célula interna capturar clique
+                      sx={{ userSelect: "none" }}
+                    >
                       {(s as any).descricao ?? JSON.stringify(s)}
                     </TableCell>
                     <TableCell>
