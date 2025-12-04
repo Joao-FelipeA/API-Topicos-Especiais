@@ -28,6 +28,7 @@ export const updateFuncionarioSchema = createFuncionarioSchema.partial();
 export const createServicoSchema = z.object({
     dta_abertura: z.string().datetime("Data deve estar no formato ISO 8601").optional(),
     dta_conclusao: z.string().datetime("Data deve estar no formato ISO 8601").optional(),
+    motivo: z.string().min(1, "É necessario o motivo"), 
     status: z.string().min(1, "É necessario deixar o status: em aberto, sendo realizado, concluido"),
     valor_total: z.number().positive("O valor total deve ser positivo"),
     clienteId: z.number().int().positive("ID do cliente é obrigatório e deve ser um número positivo"),

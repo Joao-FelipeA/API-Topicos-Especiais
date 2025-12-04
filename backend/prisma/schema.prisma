@@ -31,6 +31,7 @@ model Servico{
   id Int @id @default(autoincrement())
   dta_abertura DateTime @default(now())
   dta_conclusao DateTime?
+  Motivo String
   status String
   valor_total Float
   clienteId Int
