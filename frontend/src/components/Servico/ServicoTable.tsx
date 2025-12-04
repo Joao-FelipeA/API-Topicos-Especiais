@@ -16,52 +16,30 @@ import {
   Chip,
   Menu,
   MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import type { Servico } from "../../types/servico";
 import { useState, useMemo } from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+export interface Servico {
+  id?: number;
+  descricao?: string;
+  data_vencimento?: string | null;
+  motivo?: string | null;
+  [key: string]: any;
+}
 
-const getPriorityColor = (dataVencimento: string | Date | undefined): "default" | "warning" | "error" | "success" => {
-  if (!dataVencimento) return "default";
-
-  const dataAtual = new Date();
-  const vencimento = new Date(dataVencimento); 
-  
-  const diffTime = vencimento.getTime() - dataAtual.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-
-  if (diffDays <= 90 && diffDays > 0) return "warning";
-  
-  if (diffDays <= 0) return "error"; 
-  
-  if (diffDays <= 365) return "success"; 
-
-  return "default";
-};
-
-const getPriorityLabel = (color: "default" | "warning" | "error" | "success"): string => {
-  switch (color) {
-    case "error":
-      return "Vencido/Crítico (0 dias)";
-    case "warning":
-      return "3 Meses (Alto)";
-    case "success":
-      return "6-12 Meses (Médio)";
-    default:
-      return "Mais de 1 Ano (Baixo)";
-  }
-};
-
-interface ServicoTableProps {
+export interface ServicoTableProps {
   servicos: Servico[];
-  deletingId: number | null;
-  onDelete: (id: number) => void;
-  onEdit: (servico: Servico) => void;
-  loading: boolean;
-  onBatchAction: (ids: number[]) => void;
+  deletingId?: number | null;
+  onDelete: (id?: number | null) => void;
+  onEdit: (s: Servico) => void;
+  loading?: boolean;
+  onBatchAction?: (ids: number[]) => void;
 }
 
 export const ServicoTable = ({
@@ -77,6 +55,10 @@ export const ServicoTable = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
+  // novo estado para mostrar motivo
+  const [motivoOpen, setMotivoOpen] = useState(false);
+  const [openServico, setOpenServico] = useState<Servico | null>(null);
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
   };
@@ -85,12 +67,7 @@ export const ServicoTable = ({
       setAnchorEl(null);
   };
 
-  const handleBatchDelete = () => {
-      handleMenuClose();
-      onBatchAction(selectedIds); 
-      setSelectedIds([]); 
-  };
-
+  // removed unused handleBatchDelete; batch delete will be invoked from the menu below
   const handleBatchMarkCompleted = () => {
       handleMenuClose();
       console.log("Ação: Marcar como Concluído para IDs:", selectedIds);
@@ -136,72 +113,75 @@ export const ServicoTable = ({
   const isAllSelected = rowCount > 0 && numSelected === rowCount;
   const isIndeterminate = numSelected > 0 && numSelected < rowCount;
 
-  const BatchToolbar = () => (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            theme.palette.primary.light,
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selecionado(s)
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Lista de Serviços
-        </Typography>
-      )}
+  // abre modal de motivo ao clicar na linha
+  const handleRowOpen = (s: Servico) => {
+    setOpenServico(s);
+    setMotivoOpen(true);
+  };
 
-      {numSelected > 0 && (
+  const handleMotivoClose = () => {
+    setMotivoOpen(false);
+    setOpenServico(null);
+  };
+
+  const BatchToolbar = () => {
+    if (numSelected === 0) return null;
+
+    return (
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          px: 2,
+          py: 1,
+          bgcolor: (theme) => theme.palette.action.hover,
+        }}
+      >
+        <Typography variant="subtitle1">{numSelected} selecionado(s)</Typography>
+
         <>
-        <Tooltip title="Opções em Lote">
-            <IconButton 
-                onClick={handleMenuOpen} 
-                color="inherit"
-                aria-label="Opções em Lote"
-                aria-controls={isMenuOpen ? 'batch-menu' : undefined}
-                aria-haspopup="true"
-            >
-                <MoreVertIcon />
-            </IconButton>
-        </Tooltip>
-        <Menu
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleMenuOpen}
+            aria-controls={isMenuOpen ? "batch-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={isMenuOpen ? "true" : undefined}
+          >
+            Ações em lote
+          </Button>
+
+          <Menu
             id="batch-menu"
             anchorEl={anchorEl}
             open={isMenuOpen}
             onClose={handleMenuClose}
-            MenuListProps={{
-                'aria-labelledby': 'batch-action-button',
-            }}
-        >
-            <MenuItem onClick={handleBatchDelete} disabled={numSelected === 0}>
-                <DeleteIcon sx={{ mr: 1 }} /> Excluir Múltiplas
+          >
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                onBatchAction?.(selectedIds);
+                setSelectedIds([]);
+              }}
+            >
+              Excluir selecionados
             </MenuItem>
-            <MenuItem onClick={handleBatchMarkCompleted} disabled={numSelected === 0}>
-                <CheckCircleOutlineIcon sx={{ mr: 1 }} /> Marcar como Concluído
+            <MenuItem
+              onClick={() => {
+                handleMenuClose();
+                handleBatchMarkCompleted();
+              }}
+            >
+              Marcar como Concluído
             </MenuItem>
-        </Menu>
+          </Menu>
         </>
-      )}
-    </Toolbar>
-  );
+      </Toolbar>
+    );
+  };
 
-  return (
+    return (
     <Paper elevation={3} className="rounded-lg overflow-hidden"> 
       <BatchToolbar />
       <TableContainer>
@@ -229,30 +209,59 @@ export const ServicoTable = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {servicos.map((s) => {
+              {servicos.map((s, idx) => {
                 const id = (s as any).id;
                 const isItemDeleting = deletingId === id;
                 const isItemSelected = isSelected(id);
                 const dataVencimento = (s as any).data_vencimento; 
-                const priorityColor = getPriorityColor(dataVencimento);
-                const priorityLabel = getPriorityLabel(priorityColor);
+                const computePriorityColor = (date: any) => {
+                  if (!date) return undefined;
+                  const due = new Date(date);
+                  const today = new Date();
+                  // difference in days (due - today)
+                  const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                  if (isNaN(diffDays)) return undefined;
+                  if (diffDays < 0) return "error";
+                  if (diffDays <= 3) return "warning";
+                  return "success";
+                };
+                const computePriorityLabel = (color: string | undefined, date: any) => {
+                  if (!date) return "Indefinida";
+                  switch (color) {
+                    case "error":
+                      return "Vencido";
+                    case "warning":
+                      return "Próximo";
+                    case "success":
+                      return "OK";
+                    default:
+                      return "Pendente";
+                  }
+                };
+                const priorityColor = computePriorityColor(dataVencimento);
+                const priorityLabel = computePriorityLabel(priorityColor as any, dataVencimento);
 
                 return (
                   <TableRow
                     hover
-                    onClick={() => handleClick(id)}
+                    onClick={() => handleRowOpen(s)} // abre modal com motivo
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={id ?? Math.random()}
+                    key={id ?? `row-${idx}`}
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
-                        onClick={(event) => event.stopPropagation()} 
-                        onChange={() => handleClick(id)}
+                        // evita que o clique no checkbox abra o modal (propagação)
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) => {
+                          // change event pode vir sem id válido; só altera seleção se id existir
+                          event.stopPropagation();
+                          if (typeof id === "number") handleClick(id);
+                        }}
                       />
                     </TableCell>
                     <TableCell>{id ?? "-"}</TableCell>
@@ -310,6 +319,18 @@ export const ServicoTable = ({
           </Table>
         )}
       </TableContainer>
+
+      {/* Modal que mostra o motivo do serviço */}
+      <Dialog open={motivoOpen} onClose={handleMotivoClose}>
+        <DialogTitle>Motivo</DialogTitle>
+        <DialogContent dividers>
+          <Typography>
+            {openServico?.motivo ? openServico.motivo : "Sem motivo informado."}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleMotivoClose}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
-  );
-};
+  );}
