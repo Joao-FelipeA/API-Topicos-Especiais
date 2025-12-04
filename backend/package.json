@@ -10,7 +10,7 @@
     "seed": "npx tsx src/Scripts/seedAll.ts",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
-    "setup": "npm install && npm run prisma:generate && npm run prisma:migrate && npx tsx src/Scripts/seedAll.ts"
+    "setup": "npm install && npm run prisma:generate && npm run prisma:migrate"
   },
   "repository": {
     "type": "git",
