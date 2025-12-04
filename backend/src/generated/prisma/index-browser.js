@@ -135,7 +135,7 @@ exports.Prisma.ServicoScalarFieldEnum = {
   dta_conclusao: 'dta_conclusao',
   status: 'status',
   valor_total: 'valor_total',
-  clienteID: 'clienteID',
+  clienteId: 'clienteId',
   funcionarioID: 'funcionarioID'
 };
 

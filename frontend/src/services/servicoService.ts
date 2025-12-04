@@ -7,7 +7,7 @@ const API_BASE = import.meta.env.VITE_API_BASE || API_BASE_URL;
 export type ServicoPayload = {
   motivo?: string;
   dta_abertura?: string;
-  clienteID?: number;
+  clienteId?: number;
   funcionarioID?: number;
   status?: string;
   valor_total?: number;

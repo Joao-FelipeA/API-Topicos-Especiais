@@ -23,7 +23,7 @@ import type { Servico } from "../types/servico";
 type ServicoPayload = {
   motivo: string;
   dta_abertura: string;
-  clienteID: number;
+  clienteId: number;
   funcionarioID: number;
   status?: string | undefined;
   valor_total?: number | undefined;
@@ -87,7 +87,7 @@ export function Servicos() {
     const payload: ServicoPayload = {
       motivo: dados.motivo,
       dta_abertura: dados.dta_abertura.toISOString(),
-      clienteID: Number(dados.clienteId),
+      clienteId: Number(dados.clienteId),
       funcionarioID: Number(dados.funcionarioId),
     };
     await servicoService.createServico(payload);
@@ -116,7 +116,7 @@ export function Servicos() {
     const payload: Partial<ServicoPayload> = {
       status: dados.status,
       valor_total: toNumber(dados.valor_total),
-      clienteID: dados.cliente ? Number((dados.cliente as Cliente).id) : undefined,
+      clienteId: dados.cliente ? Number((dados.cliente as Cliente).id) : undefined,
       funcionarioID: dados.funcionario ? Number((dados.funcionario as Funcionario).id) : undefined,
     };
 

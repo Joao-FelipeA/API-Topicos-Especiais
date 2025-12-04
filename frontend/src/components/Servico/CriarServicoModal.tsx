@@ -111,7 +111,7 @@ const handleSave = useCallback(async () => {
             const payloadForValidation = {
                 motivo: formData.motivo || undefined,
                 dta_abertura: formData.dta_abertura ? new Date(formData.dta_abertura).toISOString() : undefined,
-                clienteID: formData.clienteId ? Number(formData.clienteId) : undefined,
+                clienteId: formData.clienteId ? Number(formData.clienteId) : undefined,
                 funcionarioID: formData.funcionarioId ? Number(formData.funcionarioId) : undefined,
             };
 

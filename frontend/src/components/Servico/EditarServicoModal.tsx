@@ -50,7 +50,7 @@ export const EditarServicoModal = ({
   const [form, setForm] = useState({
     status: "",
     valor_total: "",
-    clienteID: "",
+    clienteId: "",
     funcionarioID: "",
     dta_conclusao: "",
   });
@@ -79,7 +79,7 @@ export const EditarServicoModal = ({
       setForm({
         status: servico.status ?? "",
         valor_total: String(servico.valor_total ?? ""),
-        clienteID: String(servico.cliente?.id ?? ""),
+        clienteId: String(servico.cliente?.id ?? ""),
         funcionarioID: String(servico.funcionario?.id ?? ""),
         dta_conclusao: toInputDateTime(servico.dta_conclusao ?? undefined),
       });
@@ -88,7 +88,7 @@ export const EditarServicoModal = ({
       setForm({
         status: "",
         valor_total: "",
-        clienteID: "",
+        clienteId: "",
         funcionarioID: "",
         dta_conclusao: "",
       });
@@ -121,7 +121,7 @@ export const EditarServicoModal = ({
           form.valor_total !== ""
             ? (parseFloat(form.valor_total) as unknown as any)
             : undefined,
-        cliente: form.clienteID ? ({ id: Number(form.clienteID) } as Cliente) : undefined,
+        cliente: form.clienteId ? ({ id: Number(form.clienteId) } as Cliente) : undefined,
         funcionario: form.funcionarioID ? ({ id: Number(form.funcionarioID) } as Funcionario) : undefined,
         dta_conclusao: form.dta_conclusao
           ? toIsoDateTime(form.dta_conclusao) ?? undefined
@@ -192,10 +192,10 @@ export const EditarServicoModal = ({
                   label="Cliente"
                   select
                   fullWidth
-                  value={form.clienteID}
-                  onChange={(e) => handleChange("clienteID", e.target.value)}
-                  error={!!errors.clienteID}
-                  helperText={errors.clienteID}
+                  value={form.clienteId}
+                  onChange={(e) => handleChange("clienteId", e.target.value)}
+                  error={!!errors.clienteId}
+                  helperText={errors.clienteId}
                 >
                   {clientes.map((c) => (
                     <MenuItem key={c.id} value={String(c.id)}>

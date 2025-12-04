@@ -17,7 +17,7 @@ CREATE TABLE "servicos" (
     "dta_conclusao" TIMESTAMP(3),
     "status" TEXT NOT NULL,
     "valor_total" DOUBLE PRECISION NOT NULL,
-    "clienteID" INTEGER NOT NULL,
+    "clienteId" INTEGER NOT NULL,
     "funcionarioID" INTEGER NOT NULL,
 
     CONSTRAINT "servicos_pkey" PRIMARY KEY ("id")
@@ -37,7 +37,7 @@ CREATE TABLE "funcionarios" (
 );
 
 -- AddForeignKey
-ALTER TABLE "servicos" ADD CONSTRAINT "servicos_clienteID_fkey" FOREIGN KEY ("clienteID") REFERENCES "clientes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "servicos" ADD CONSTRAINT "servicos_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "clientes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "servicos" ADD CONSTRAINT "servicos_funcionarioID_fkey" FOREIGN KEY ("funcionarioID") REFERENCES "funcionarios"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

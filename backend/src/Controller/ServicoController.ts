@@ -12,7 +12,7 @@ export const createServico = async (req: Request, res: Response) => {
     const validatedData = createServicoSchema.parse(req.body);
 
     const clienteExiste = await prisma.cliente.findUnique({
-      where: { id: validatedData.clienteID },
+      where: { id: validatedData.clienteId },
     });
 
     if (!clienteExiste) {
@@ -116,9 +116,9 @@ export const updateServico = async (req: Request, res: Response) => {
         .json({ message: "Nenhum dado para atualizar foi fornecido." });
     }
 
-    if (validatedData.clienteID) {
+    if (validatedData.clienteId) {
       const clienteExiste = await prisma.cliente.findUnique({
-        where: { id: validatedData.clienteID },
+        where: { id: validatedData.clienteId },
       });
 
       if (!clienteExiste) {

@@ -2239,14 +2239,14 @@ export namespace Prisma {
   export type ServicoAvgAggregateOutputType = {
     id: number | null
     valor_total: number | null
-    clienteID: number | null
+    clienteId: number | null
     funcionarioID: number | null
   }
 
   export type ServicoSumAggregateOutputType = {
     id: number | null
     valor_total: number | null
-    clienteID: number | null
+    clienteId: number | null
     funcionarioID: number | null
   }
 
@@ -2256,7 +2256,7 @@ export namespace Prisma {
     dta_conclusao: Date | null
     status: string | null
     valor_total: number | null
-    clienteID: number | null
+    clienteId: number | null
     funcionarioID: number | null
   }
 
@@ -2266,7 +2266,7 @@ export namespace Prisma {
     dta_conclusao: Date | null
     status: string | null
     valor_total: number | null
-    clienteID: number | null
+    clienteId: number | null
     funcionarioID: number | null
   }
 
@@ -2285,14 +2285,14 @@ export namespace Prisma {
   export type ServicoAvgAggregateInputType = {
     id?: true
     valor_total?: true
-    clienteID?: true
+    clienteId?: true
     funcionarioID?: true
   }
 
   export type ServicoSumAggregateInputType = {
     id?: true
     valor_total?: true
-    clienteID?: true
+    clienteId?: true
     funcionarioID?: true
   }
 
@@ -2302,7 +2302,7 @@ export namespace Prisma {
     dta_conclusao?: true
     status?: true
     valor_total?: true
-    clienteID?: true
+    clienteId?: true
     funcionarioID?: true
   }
 
@@ -2312,7 +2312,7 @@ export namespace Prisma {
     dta_conclusao?: true
     status?: true
     valor_total?: true
-    clienteID?: true
+    clienteId?: true
     funcionarioID?: true
   }
 
@@ -2322,7 +2322,7 @@ export namespace Prisma {
     dta_conclusao?: true
     status?: true
     valor_total?: true
-    clienteID?: true
+    clienteId?: true
     funcionarioID?: true
     _all?: true
   }
@@ -2419,7 +2419,7 @@ export namespace Prisma {
     dta_conclusao: Date | null
     status: string
     valor_total: number
-    clienteID: number
+    clienteId: number
     funcionarioID: number
     _count: ServicoCountAggregateOutputType | null
     _avg: ServicoAvgAggregateOutputType | null
@@ -2448,7 +2448,7 @@ export namespace Prisma {
     dta_conclusao?: boolean
     status?: boolean
     valor_total?: boolean
-    clienteID?: boolean
+    clienteId?: boolean
     funcionarioID?: boolean
     cliente?: boolean | ClienteDefaultArgs<ExtArgs>
     funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
@@ -2460,7 +2460,7 @@ export namespace Prisma {
     dta_conclusao?: boolean
     status?: boolean
     valor_total?: boolean
-    clienteID?: boolean
+    clienteId?: boolean
     funcionarioID?: boolean
     cliente?: boolean | ClienteDefaultArgs<ExtArgs>
     funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
@@ -2472,7 +2472,7 @@ export namespace Prisma {
     dta_conclusao?: boolean
     status?: boolean
     valor_total?: boolean
-    clienteID?: boolean
+    clienteId?: boolean
     funcionarioID?: boolean
     cliente?: boolean | ClienteDefaultArgs<ExtArgs>
     funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
@@ -2484,11 +2484,11 @@ export namespace Prisma {
     dta_conclusao?: boolean
     status?: boolean
     valor_total?: boolean
-    clienteID?: boolean
+    clienteId?: boolean
     funcionarioID?: boolean
   }
 
-  export type ServicoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dta_abertura" | "dta_conclusao" | "status" | "valor_total" | "clienteID" | "funcionarioID", ExtArgs["result"]["servico"]>
+  export type ServicoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dta_abertura" | "dta_conclusao" | "status" | "valor_total" | "clienteId" | "funcionarioID", ExtArgs["result"]["servico"]>
   export type ServicoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     cliente?: boolean | ClienteDefaultArgs<ExtArgs>
     funcionario?: boolean | FuncionarioDefaultArgs<ExtArgs>
@@ -2514,7 +2514,7 @@ export namespace Prisma {
       dta_conclusao: Date | null
       status: string
       valor_total: number
-      clienteID: number
+      clienteId: number
       funcionarioID: number
     }, ExtArgs["result"]["servico"]>
     composites: {}
@@ -2946,7 +2946,7 @@ export namespace Prisma {
     readonly dta_conclusao: FieldRef<"Servico", 'DateTime'>
     readonly status: FieldRef<"Servico", 'String'>
     readonly valor_total: FieldRef<"Servico", 'Float'>
-    readonly clienteID: FieldRef<"Servico", 'Int'>
+    readonly clienteId: FieldRef<"Servico", 'Int'>
     readonly funcionarioID: FieldRef<"Servico", 'Int'>
   }
     
@@ -4528,7 +4528,7 @@ export namespace Prisma {
     dta_conclusao: 'dta_conclusao',
     status: 'status',
     valor_total: 'valor_total',
-    clienteID: 'clienteID',
+    clienteId: 'clienteId',
     funcionarioID: 'funcionarioID'
   };
 
@@ -4707,7 +4707,7 @@ export namespace Prisma {
     dta_conclusao?: DateTimeNullableFilter<"Servico"> | Date | string | null
     status?: StringFilter<"Servico"> | string
     valor_total?: FloatFilter<"Servico"> | number
-    clienteID?: IntFilter<"Servico"> | number
+    clienteId?: IntFilter<"Servico"> | number
     funcionarioID?: IntFilter<"Servico"> | number
     cliente?: XOR<ClienteScalarRelationFilter, ClienteWhereInput>
     funcionario?: XOR<FuncionarioScalarRelationFilter, FuncionarioWhereInput>
@@ -4719,7 +4719,7 @@ export namespace Prisma {
     dta_conclusao?: SortOrderInput | SortOrder
     status?: SortOrder
     valor_total?: SortOrder
-    clienteID?: SortOrder
+    clienteId?: SortOrder
     funcionarioID?: SortOrder
     cliente?: ClienteOrderByWithRelationInput
     funcionario?: FuncionarioOrderByWithRelationInput
@@ -4734,7 +4734,7 @@ export namespace Prisma {
     dta_conclusao?: DateTimeNullableFilter<"Servico"> | Date | string | null
     status?: StringFilter<"Servico"> | string
     valor_total?: FloatFilter<"Servico"> | number
-    clienteID?: IntFilter<"Servico"> | number
+    clienteId?: IntFilter<"Servico"> | number
     funcionarioID?: IntFilter<"Servico"> | number
     cliente?: XOR<ClienteScalarRelationFilter, ClienteWhereInput>
     funcionario?: XOR<FuncionarioScalarRelationFilter, FuncionarioWhereInput>
@@ -4746,7 +4746,7 @@ export namespace Prisma {
     dta_conclusao?: SortOrderInput | SortOrder
     status?: SortOrder
     valor_total?: SortOrder
-    clienteID?: SortOrder
+    clienteId?: SortOrder
     funcionarioID?: SortOrder
     _count?: ServicoCountOrderByAggregateInput
     _avg?: ServicoAvgOrderByAggregateInput
@@ -4764,7 +4764,7 @@ export namespace Prisma {
     dta_conclusao?: DateTimeNullableWithAggregatesFilter<"Servico"> | Date | string | null
     status?: StringWithAggregatesFilter<"Servico"> | string
     valor_total?: FloatWithAggregatesFilter<"Servico"> | number
-    clienteID?: IntWithAggregatesFilter<"Servico"> | number
+    clienteId?: IntWithAggregatesFilter<"Servico"> | number
     funcionarioID?: IntWithAggregatesFilter<"Servico"> | number
   }
 
@@ -4914,7 +4914,7 @@ export namespace Prisma {
     dta_conclusao?: Date | string | null
     status: string
     valor_total: number
-    clienteID: number
+    clienteId: number
     funcionarioID: number
   }
 
@@ -4933,7 +4933,7 @@ export namespace Prisma {
     dta_conclusao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     valor_total?: FloatFieldUpdateOperationsInput | number
-    clienteID?: IntFieldUpdateOperationsInput | number
+    clienteId?: IntFieldUpdateOperationsInput | number
     funcionarioID?: IntFieldUpdateOperationsInput | number
   }
 
@@ -4943,7 +4943,7 @@ export namespace Prisma {
     dta_conclusao?: Date | string | null
     status: string
     valor_total: number
-    clienteID: number
+    clienteId: number
     funcionarioID: number
   }
 
@@ -4960,7 +4960,7 @@ export namespace Prisma {
     dta_conclusao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     valor_total?: FloatFieldUpdateOperationsInput | number
-    clienteID?: IntFieldUpdateOperationsInput | number
+    clienteId?: IntFieldUpdateOperationsInput | number
     funcionarioID?: IntFieldUpdateOperationsInput | number
   }
 
@@ -5229,14 +5229,14 @@ export namespace Prisma {
     dta_conclusao?: SortOrder
     status?: SortOrder
     valor_total?: SortOrder
-    clienteID?: SortOrder
+    clienteId?: SortOrder
     funcionarioID?: SortOrder
   }
 
   export type ServicoAvgOrderByAggregateInput = {
     id?: SortOrder
     valor_total?: SortOrder
-    clienteID?: SortOrder
+    clienteId?: SortOrder
     funcionarioID?: SortOrder
   }
 
@@ -5246,7 +5246,7 @@ export namespace Prisma {
     dta_conclusao?: SortOrder
     status?: SortOrder
     valor_total?: SortOrder
-    clienteID?: SortOrder
+    clienteId?: SortOrder
     funcionarioID?: SortOrder
   }
 
@@ -5256,14 +5256,14 @@ export namespace Prisma {
     dta_conclusao?: SortOrder
     status?: SortOrder
     valor_total?: SortOrder
-    clienteID?: SortOrder
+    clienteId?: SortOrder
     funcionarioID?: SortOrder
   }
 
   export type ServicoSumOrderByAggregateInput = {
     id?: SortOrder
     valor_total?: SortOrder
-    clienteID?: SortOrder
+    clienteId?: SortOrder
     funcionarioID?: SortOrder
   }
 
@@ -5724,7 +5724,7 @@ export namespace Prisma {
     dta_conclusao?: DateTimeNullableFilter<"Servico"> | Date | string | null
     status?: StringFilter<"Servico"> | string
     valor_total?: FloatFilter<"Servico"> | number
-    clienteID?: IntFilter<"Servico"> | number
+    clienteId?: IntFilter<"Servico"> | number
     funcionarioID?: IntFilter<"Servico"> | number
   }
 
@@ -5846,7 +5846,7 @@ export namespace Prisma {
     dta_conclusao?: Date | string | null
     status: string
     valor_total: number
-    clienteID: number
+    clienteId: number
   }
 
   export type ServicoCreateOrConnectWithoutFuncionarioInput = {
@@ -5916,7 +5916,7 @@ export namespace Prisma {
     dta_conclusao?: Date | string | null
     status: string
     valor_total: number
-    clienteID: number
+    clienteId: number
   }
 
   export type ServicoUpdateWithoutFuncionarioInput = {
@@ -5933,7 +5933,7 @@ export namespace Prisma {
     dta_conclusao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     valor_total?: FloatFieldUpdateOperationsInput | number
-    clienteID?: IntFieldUpdateOperationsInput | number
+    clienteId?: IntFieldUpdateOperationsInput | number
   }
 
   export type ServicoUncheckedUpdateManyWithoutFuncionarioInput = {
@@ -5942,7 +5942,7 @@ export namespace Prisma {
     dta_conclusao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: StringFieldUpdateOperationsInput | string
     valor_total?: FloatFieldUpdateOperationsInput | number
-    clienteID?: IntFieldUpdateOperationsInput | number
+    clienteId?: IntFieldUpdateOperationsInput | number
   }
 
 

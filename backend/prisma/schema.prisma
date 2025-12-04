@@ -33,10 +33,10 @@ model Servico{
   dta_conclusao DateTime?
   status String
   valor_total Float
-  clienteID Int
+  clienteId Int
   funcionarioID Int
 
-  cliente Cliente @relation(fields: [clienteID], references: [id])
+  cliente Cliente @relation(fields: [clienteId], references: [id])
   funcionario Funcionario @relation(fields: [funcionarioID], references: [id])
 
   @@map("servicos")

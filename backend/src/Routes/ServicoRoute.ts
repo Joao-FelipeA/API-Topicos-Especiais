@@ -30,12 +30,12 @@ const router = Router();
  *               - id: 1
  *                 status: "aberto"
  *                 valor_total: 150.5
- *                 clienteID: 1
+ *                 clienteId: 1
  *                 funcionarioID: 2
  *               - id: 2
  *                 status: "concluido"
  *                 valor_total: 300
- *                 clienteID: 2
+ *                 clienteId: 2
  *                 funcionarioID: 1
  *        500:
  *         description: Erro no servidor

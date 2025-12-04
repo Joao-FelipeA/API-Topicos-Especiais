@@ -9,6 +9,6 @@ export interface Servico{
     valor_total:Float32Array;
     cliente?: Cliente;
     funcionario?: Funcionario;
-    clienteID?: number;      
+    clienteId?: number;      
     funcionarioID?: number;
 }
