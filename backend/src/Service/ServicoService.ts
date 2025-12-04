@@ -1,15 +1,6 @@
 import prisma from "../database/prisma";
 import { Servico } from "@prisma/client";
-
-type ServicoCreateData = Omit<
-  Servico,
-  "id" | "dta_abertura" | "dta_conclusao"
-> & {
-  dta_abertura?: string | Date;
-  dta_conclusao?: string | Date | null;
-};
-
-type ServicoUpdateData = Partial<ServicoCreateData>;
+import { CreateServicoData, UpdateServicoData } from "../Schemas/validation";
 
 const toDate = (
   v: string | Date | null | undefined
@@ -21,7 +12,7 @@ const toDate = (
   return Number.isNaN(d.getTime()) ? undefined : d;
 };
 
-export const create = async (data: ServicoCreateData): Promise<Servico> => {
+export const create = async (data: CreateServicoData): Promise<Servico> => {
   const dataComDatasCorretas: any = { ...data };
 
   if (data.dta_abertura) {
@@ -66,7 +57,7 @@ export const getById = async (id: number): Promise<Servico | null> => {
 
 export const update = async (
   id: number,
-  data: ServicoUpdateData
+  data: UpdateServicoData
 ): Promise<Servico> => {
   const dadosParaAtualizar: any = { ...data };
 

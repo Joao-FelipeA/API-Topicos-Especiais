@@ -4,7 +4,7 @@ export const createClienteSchema = z.object({
   nome: z.string().min(1, "Nome é obrigatório"),
   CPF: z.string().min(11, "CPF deve ter 11 dígitos"),
   CNPJ: z.string().optional(),
-  email: z.string().email("Email deve ser válido"),
+  email: z.email("Email deve ser válido"),
   telefone: z.string().or(z.number()).transform(val => 
     typeof val === 'string' ? parseInt(val, 10) : val
   )
@@ -17,7 +17,7 @@ export const createFuncionarioSchema = z.object({
     telefone: z.string().or(z.number()).transform(val => 
     typeof val === 'string' ? parseInt(val, 10) : val
     ),
-    email: z.string().email("Insira um formato de email valido"),
+    email: z.email("Insira um formato de email valido"),
     especialidade: z.string().min(3, "Especialidade é obrigatorio"),
     CPF: z.string().min(11, "CPF deve ter 11 dígitos"),
     senha: z.string().min(6, "Senha deve ter ao menos 6 caracteres")
@@ -28,7 +28,7 @@ export const updateFuncionarioSchema = createFuncionarioSchema.partial();
 export const createServicoSchema = z.object({
     dta_abertura: z.string().datetime("Data deve estar no formato ISO 8601").optional(),
     dta_conclusao: z.string().datetime("Data deve estar no formato ISO 8601").optional(),
-    motivo: z.string().min(1, "É necessario o motivo"), 
+    Motivo: z.string().min(1, "É necessario o motivo"), 
     status: z.string().min(1, "É necessario deixar o status: em aberto, sendo realizado, concluido").optional(),
     valor_total: z.number().positive("O valor total deve ser positivo").optional(),
     clienteId: z.number().int().positive("ID do cliente é obrigatório e deve ser um número positivo"),
@@ -36,3 +36,12 @@ export const createServicoSchema = z.object({
 });
 
 export const updateServicoSchema = createServicoSchema.partial();
+
+export type CreateClienteData = z.infer<typeof createClienteSchema>
+export type UpdateClienteData = z.infer<typeof updateClienteSchema>
+
+export type CreateFuncionarioData = z.infer<typeof createFuncionarioSchema>
+export type UpdateFuncionarioData = z.infer<typeof updateFuncionarioSchema>
+
+export type CreateServicoData = z.infer<typeof createServicoSchema>
+export type UpdateServicoData = z.infer<typeof updateServicoSchema>

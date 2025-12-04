@@ -27,7 +27,8 @@ export const createServico = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Funcionário não encontrado" });
     }
 
-    const servico = await servicosService.create(validatedData);
+    const servico = await servicosService.create(
+      validatedData);
     return res.status(201).json(servico);
   } catch (error: any) {
     if (error instanceof z.ZodError) {
