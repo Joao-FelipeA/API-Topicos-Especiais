@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import ClienteService from "../Service/ClienteService";
-import { Cliente } from "../generated/prisma";
+import { Cliente } from "@prisma/client";
 import {
   createClienteSchema,
   updateClienteSchema,

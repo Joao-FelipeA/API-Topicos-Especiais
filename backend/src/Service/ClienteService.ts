@@ -1,5 +1,5 @@
 import prisma from "../database/prisma";
-import { Cliente } from "../generated/prisma";
+import { Cliente } from "@prisma/client";
 
 const ClienteService = {
     

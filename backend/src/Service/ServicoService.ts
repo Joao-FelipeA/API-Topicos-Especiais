@@ -1,5 +1,5 @@
 import prisma from "../database/prisma";
-import { Servico } from "../generated/prisma";
+import { Servico } from "@prisma/client";
 
 type ServicoCreateData = Omit<
   Servico,

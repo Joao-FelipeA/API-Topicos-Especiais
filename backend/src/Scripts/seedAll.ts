@@ -51,14 +51,14 @@ async function main() {
   await servicoService.create({
     status: "aberto",
     valor_total: 150.5,
-    clienteId: cliente1.id,
+    clienteID: cliente1.id,
     funcionarioID: funcionario1.id,
   });
 
   await servicoService.create({
     status: "concluido",
     valor_total: 300,
-    clienteId: cliente2.id,
+    clienteID: cliente2.id,
     funcionarioID: funcionario2.id,
   });
 

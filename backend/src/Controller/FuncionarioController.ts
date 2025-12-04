@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Funcionario } from "../generated/prisma";
+import { Funcionario } from "@prisma/client";
 import { FuncionarioService } from "../Service/FuncionarioService";
 import {
   createFuncionarioSchema,

@@ -1,5 +1,5 @@
 import prisma from "../database/prisma";
-import { Funcionario } from "../generated/prisma";
+import { Funcionario } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 export class FuncionarioService {
