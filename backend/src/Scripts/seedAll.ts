@@ -49,16 +49,18 @@ async function main() {
 
   // Criar serviços
   await servicoService.create({
+    Motivo: "Curto na rede eletrica",
     status: "aberto",
     valor_total: 150.5,
-    clienteID: cliente1.id,
+    clienteId: cliente1.id,
     funcionarioID: funcionario1.id,
   });
 
   await servicoService.create({
+    Motivo: "Infiltração",
     status: "concluido",
     valor_total: 300,
-    clienteID: cliente2.id,
+    clienteId: cliente2.id,
     funcionarioID: funcionario2.id,
   });
 
