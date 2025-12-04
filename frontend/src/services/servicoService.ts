@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Servico } from "../types/servico"; // usar o tipo centralizado
+import type { Servico } from "../types/servico"; 
 import { API_BASE_URL } from "../config/api";
 
 const API_BASE = import.meta.env.VITE_API_BASE || API_BASE_URL;
@@ -32,8 +32,14 @@ export async function updateServico(
   return resp.data;
 }
 
+
+export async function deleteServico( id:number ): Promise<void>{
+  await axios.delete (`${API_BASE}/servicos/${id}`);
+}
+
 export default {
   getServicos,
   createServico,
   updateServico,
+  deleteServico
 };
