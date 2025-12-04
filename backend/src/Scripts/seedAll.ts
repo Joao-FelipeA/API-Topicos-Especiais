@@ -15,18 +15,18 @@ async function main() {
 
   // Criar funcionarios
   const funcionario1 = await funcionarioService.criar({
-    nome: "Ana Silva",
+    nome: "Calebe",
     telefone: 1199999000,
-    email: "anasilva@example.com",
+    email: "calebe@example.com",
     especialidade: "Eletricista",
     CPF: "12345678901",
     senha: "123456",
   });
 
   const funcionario2 = await funcionarioService.criar({
-    nome: "João Pereira",
+    nome: "João Felipe",
     telefone: 1188888000,
-    email: "joaopereira@example.com",
+    email: "joaofelipe@example.com",
     especialidade: "Encanador",
     CPF: "10987654321",
     senha: "123456",
@@ -34,16 +34,16 @@ async function main() {
 
   // Criar clientes
   const cliente1 = await ClienteService.createCliente({
-    nome: "Cliente A",
+    nome: "Thiago",
     CPF: "11122233344",
-    email: "clientea@example.com",
+    email: "thiago@example.com",
     telefone: 1191111222,
   });
 
   const cliente2 = await ClienteService.createCliente({
-    nome: "Cliente B",
+    nome: "Laura",
     CPF: "55566677788",
-    email: "clienteb@example.com",
+    email: "laura@example.com",
     telefone: 1193333444,
   });
 
