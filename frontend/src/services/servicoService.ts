@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { Servico } from "../types/servico"; 
 import { API_BASE_URL } from "../config/api";
+import { API_ENDPOINTS } from "../config/api";
 
 const API_BASE = import.meta.env.VITE_API_BASE || API_BASE_URL;
 
@@ -20,7 +21,7 @@ export async function getServicos(): Promise<Servico[]> {
 }
 
 export async function createServico(payload: ServicoPayload): Promise<Servico> {
-  const resp = await axios.post<Servico>(`${API_BASE}/servicos`, payload);
+  const resp = await axios.post<Servico>(`${API_ENDPOINTS.SERVICOS}`, payload);
   return resp.data;
 }
 
