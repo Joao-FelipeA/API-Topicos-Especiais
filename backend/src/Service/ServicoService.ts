@@ -19,6 +19,10 @@ export const create = async (data: CreateServicoData): Promise<Servico> => {
     dataComDatasCorretas.dta_abertura = toDate(data.dta_abertura) as Date;
   }
 
+  if (!data.status) {
+    dataComDatasCorretas.status = "em aberto";
+  }
+  
   // Se o status for "concluido", adiciona automaticamente a data de conclusão
   if (data.status === "concluido") {
     dataComDatasCorretas.dta_conclusao = new Date();
