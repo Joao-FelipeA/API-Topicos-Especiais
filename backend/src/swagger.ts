@@ -67,7 +67,7 @@ const options: swaggerJsdoc.Options = {
             status: { type: "string", example: "aberto" },
             valor_total: { type: "number", example: 150.5 },
             clienteId: { type: "integer", example: 1 },
-            funcionarioID: { type: "integer", example: 2 },
+            funcionarioId: { type: "integer", example: 2 },
             dta_abertura: { type: "string", format: "date-time" },
             dta_conclusao: { type: ["string", "null"], format: "date-time" },
           },

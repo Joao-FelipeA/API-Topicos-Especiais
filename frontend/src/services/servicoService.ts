@@ -8,7 +8,7 @@ export type ServicoPayload = {
   motivo?: string;
   dta_abertura?: string;
   clienteId?: number;
-  funcionarioID?: number;
+  funcionarioId?: number;
   status?: string;
   valor_total?: number;
   dta_conclusao?: string | null;

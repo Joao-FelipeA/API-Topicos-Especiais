@@ -24,7 +24,7 @@ type ServicoPayload = {
   motivo: string;
   dta_abertura: string;
   clienteId: number;
-  funcionarioID: number;
+  funcionarioId: number;
   status?: string | undefined;
   valor_total?: number | undefined;
   dta_conclusao?: string | undefined;
@@ -88,7 +88,7 @@ export function Servicos() {
       motivo: dados.motivo,
       dta_abertura: dados.dta_abertura.toISOString(),
       clienteId: Number(dados.clienteId),
-      funcionarioID: Number(dados.funcionarioId),
+      funcionarioId: Number(dados.funcionarioId),
     };
     await servicoService.createServico(payload);
     await fetchServicos();
@@ -117,7 +117,7 @@ export function Servicos() {
       status: dados.status,
       valor_total: toNumber(dados.valor_total),
       clienteId: dados.cliente ? Number((dados.cliente as Cliente).id) : undefined,
-      funcionarioID: dados.funcionario ? Number((dados.funcionario as Funcionario).id) : undefined,
+      funcionarioId: dados.funcionario ? Number((dados.funcionario as Funcionario).id) : undefined,
     };
 
     if (dados.dta_conclusao !== undefined && dados.dta_conclusao !== null) {

@@ -51,7 +51,7 @@ export const EditarServicoModal = ({
     status: "",
     valor_total: "",
     clienteId: "",
-    funcionarioID: "",
+    funcionarioId: "",
     dta_conclusao: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -80,7 +80,7 @@ export const EditarServicoModal = ({
         status: servico.status ?? "",
         valor_total: String(servico.valor_total ?? ""),
         clienteId: String(servico.cliente?.id ?? ""),
-        funcionarioID: String(servico.funcionario?.id ?? ""),
+        funcionarioId: String(servico.funcionario?.id ?? ""),
         dta_conclusao: toInputDateTime(servico.dta_conclusao ?? undefined),
       });
       setErrors({});
@@ -89,7 +89,7 @@ export const EditarServicoModal = ({
         status: "",
         valor_total: "",
         clienteId: "",
-        funcionarioID: "",
+        funcionarioId: "",
         dta_conclusao: "",
       });
       setErrors({});
@@ -122,7 +122,7 @@ export const EditarServicoModal = ({
             ? (parseFloat(form.valor_total) as unknown as any)
             : undefined,
         cliente: form.clienteId ? ({ id: Number(form.clienteId) } as Cliente) : undefined,
-        funcionario: form.funcionarioID ? ({ id: Number(form.funcionarioID) } as Funcionario) : undefined,
+        funcionario: form.funcionarioId ? ({ id: Number(form.funcionarioId) } as Funcionario) : undefined,
         dta_conclusao: form.dta_conclusao
           ? toIsoDateTime(form.dta_conclusao) ?? undefined
           : undefined,
@@ -210,10 +210,10 @@ export const EditarServicoModal = ({
                   label="Funcionário"
                   select
                   fullWidth
-                  value={form.funcionarioID}
-                  onChange={(e) => handleChange("funcionarioID", e.target.value)}
-                  error={!!errors.funcionarioID}
-                  helperText={errors.funcionarioID}
+                  value={form.funcionarioId}
+                  onChange={(e) => handleChange("funcionarioId", e.target.value)}
+                  error={!!errors.funcionarioId}
+                  helperText={errors.funcionarioId}
                 >
                   {funcionarios.map((f) => (
                     <MenuItem key={f.id} value={String(f.id)}>

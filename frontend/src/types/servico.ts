@@ -10,5 +10,5 @@ export interface Servico{
     cliente?: Cliente;
     funcionario?: Funcionario;
     clienteId?: number;      
-    funcionarioID?: number;
+    funcionarioId?: number;
 }
