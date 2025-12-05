@@ -43,7 +43,7 @@ export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalPr
       await onSave({
         nome: form.nome.trim(),
         email: form.email.trim() || undefined,
-        CPF: form.CPF.trim() || undefined,
+        CPF: form.CPF.trim(),
         telefone: form.telefone.trim() ? Number(form.telefone.trim()) : undefined
       });
       setForm({ nome: "", email: "", CPF: "", telefone: "" });
