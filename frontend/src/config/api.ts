@@ -10,7 +10,7 @@ export const getApiUrl = (): string => {
   }
 
   
-  return "http://localhost:3001";
+  return "http://localhost:3333";
 };
 
 export const API_BASE_URL = getApiUrl();
