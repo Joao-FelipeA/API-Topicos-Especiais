@@ -13,7 +13,7 @@ import {
 interface CriarClienteModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (dados: { nome: string; email?: string; CPF?: string; telefone?: number;}) => Promise<void>;
+  onSave: (dados: { nome: string; email: string; CPF: string; telefone: number;}) => Promise<void>;
 }
 
 export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalProps) {

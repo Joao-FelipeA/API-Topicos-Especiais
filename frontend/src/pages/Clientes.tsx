@@ -36,12 +36,13 @@ export default function Clientes() {
   const handleAbrirCriar = () => setOpenCriar(true);
   const handleFecharCriar = () => setOpenCriar(false);
 
-  const handleCriarSalvar = async (dados: { nome: string; email?: string; cpf?: string }) => {
+  const handleCriarSalvar = async (dados: { nome: string; email: string; CPF: string; telefone: number }) => {
     try {
       const payload: Omit<Cliente, "id"> = {
         nome: dados.nome,
-        email: dados.email ?? "",
-        cpf: dados.cpf ?? ""
+        email: dados.email,
+        CPF: dados.CPF,
+        telefone: dados.telefone
       };
       await clienteService.createClientes(payload);
       await fetchClientes();

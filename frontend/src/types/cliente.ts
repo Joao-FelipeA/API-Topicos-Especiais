@@ -2,6 +2,7 @@ export interface Cliente {
   id: number;
   nome: string;
   email: string;
-  cpf: string;
-  telefone?: string;
+  CPF: string;
+  CNPJ?: string;
+  telefone: number;
 }
