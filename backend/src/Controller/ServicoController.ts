@@ -20,7 +20,7 @@ export const createServico = async (req: Request, res: Response) => {
     }
 
     const funcionarioExiste = await prisma.funcionario.findUnique({
-      where: { id: validatedData.funcionarioID },
+      where: { id: validatedData.funcionarioId },
     });
 
     if (!funcionarioExiste) {
@@ -127,9 +127,9 @@ export const updateServico = async (req: Request, res: Response) => {
       }
     }
 
-    if (validatedData.funcionarioID) {
+    if (validatedData.funcionarioId) {
       const funcionarioExiste = await prisma.funcionario.findUnique({
-        where: { id: validatedData.funcionarioID },
+        where: { id: validatedData.funcionarioId },
       });
 
       if (!funcionarioExiste) {
