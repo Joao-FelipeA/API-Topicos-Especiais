@@ -1,9 +1,6 @@
 import axios from "axios";
-import type { Servico } from "../types/servico"; 
-import { API_BASE_URL } from "../config/api";
+import type { Servico } from "../types/servico";
 import { API_ENDPOINTS } from "../config/api";
-
-const API_BASE = import.meta.env.VITE_API_BASE || API_BASE_URL;
 
 export type ServicoPayload = {
   motivo?: string;
@@ -16,7 +13,7 @@ export type ServicoPayload = {
 };
 
 export async function getServicos(): Promise<Servico[]> {
-  const resp = await axios.get<Servico[]>(`${API_BASE}/servicos`);
+  const resp = await axios.get<Servico[]>(`${API_ENDPOINTS.SERVICOS}`);
   return resp.data;
 }
 
@@ -29,13 +26,13 @@ export async function updateServico(
   id: number,
   payload: Partial<ServicoPayload>
 ): Promise<Servico> {
-  const resp = await axios.put<Servico>(`${API_BASE}/servicos/${id}`, payload);
+  const resp = await axios.put<Servico>(`${API_ENDPOINTS.SERVICOS}/${id}`, payload);
   return resp.data;
 }
 
 
 export async function deleteServico( id:number ): Promise<void>{
-  await axios.delete (`${API_BASE}/servicos/${id}`);
+  await axios.delete (`${API_ENDPOINTS.SERVICOS}/${id}`);
 }
 
 export default {
