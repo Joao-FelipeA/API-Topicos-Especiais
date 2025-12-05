@@ -13,11 +13,11 @@ import {
 interface CriarClienteModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (dados: { nome: string; email?: string; cpf?: string }) => Promise<void>;
+  onSave: (dados: { nome: string; email?: string; CPF?: string; telefone?: number;}) => Promise<void>;
 }
 
 export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalProps) {
-  const [form, setForm] = useState({ nome: "", email: "", cpf: "" });
+  const [form, setForm] = useState({ nome: "", email: "", CPF: "", telefone: ""});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
 
@@ -30,7 +30,8 @@ export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalPr
     const err: Record<string, string> = {};
     if (!form.nome.trim()) err.nome = "Nome é obrigatório";
     if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) err.email = "Email inválido";
-    if (form.cpf && !/^\d{11}$/.test(form.cpf)) err.cpf = "CPF deve ter 11 dígitos numéricos";
+    if (form.CPF && !/^\d{11}$/.test(form.CPF)) err.cpf = "CPF deve ter 11 dígitos numéricos";
+    if (form.telefone && !/^\d{9}$/.test(form.telefone)) err.telefone = "O telefone tem que ter no minimo 9 digitos"
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -42,9 +43,10 @@ export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalPr
       await onSave({
         nome: form.nome.trim(),
         email: form.email.trim() || undefined,
-        cpf: form.cpf.trim() || undefined,
+        CPF: form.CPF.trim() || undefined,
+        telefone: form.telefone.trim() ? Number(form.telefone.trim()) : undefined
       });
-      setForm({ nome: "", email: "", cpf: "" });
+      setForm({ nome: "", email: "", CPF: "", telefone: "" });
       onClose();
     } catch (err: any) {
       // exibe erro genérico; a action pai pode lançar para mensagens mais específicas
@@ -79,10 +81,18 @@ export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalPr
           <TextField
             label="CPF (apenas números)"
             fullWidth
-            value={form.cpf}
-            onChange={handleChange("cpf")}
+            value={form.CPF}
+            onChange={handleChange("CPF")}
             error={!!errors.cpf}
             helperText={errors.cpf}
+          />
+          <TextField
+            label="Telefone (apenas números)"
+            fullWidth
+            value={form.telefone}
+            onChange={handleChange("telefone")}
+            error={!!errors.telefone}
+            helperText={errors.telefone}
           />
           {errors.global && (
             <Box color="error.main" mt={1}>
