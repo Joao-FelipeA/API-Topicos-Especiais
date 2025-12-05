@@ -31,11 +31,11 @@ model Servico{
   id Int @id @default(autoincrement())
   dta_abertura DateTime @default(now())
   dta_conclusao DateTime?
-  Motivo String
+  motivo String
   status String
   valor_total Float
   clienteId Int
-  funcionarioID Int
+  funcionarioId Int
 
   cliente Cliente @relation(fields: [clienteId], references: [id])
   funcionario Funcionario @relation(fields: [funcionarioID], references: [id])
