@@ -2,9 +2,9 @@ import {z} from "zod";
 
 export const createClienteSchema = z.object({
   nome: z.string().min(1, "Nome é obrigatório"),
-  CPF: z.string().min(11, "CPF deve ter 11 dígitos").optional(),
+  CPF: z.string().min(11, "CPF deve ter 11 dígitos"),
   CNPJ: z.string().optional(),
-  email: z.string().email("Email deve ser válido").optional(),
+  email: z.string().email("Email deve ser válido"),
   telefone: z.string().or(z.number()).transform(val => 
     typeof val === 'string' ? parseInt(val, 10) : val
   )

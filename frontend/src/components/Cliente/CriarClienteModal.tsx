@@ -29,9 +29,12 @@ export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalPr
   const validate = () => {
     const err: Record<string, string> = {};
     if (!form.nome.trim()) err.nome = "Nome é obrigatório";
-    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) err.email = "Email inválido";
-    if (form.CPF && !/^\d{11}$/.test(form.CPF)) err.cpf = "CPF deve ter 11 dígitos numéricos";
-    if (form.telefone && !/^\d{9}$/.test(form.telefone)) err.telefone = "O telefone tem que ter no minimo 9 digitos"
+    if (!form.email.trim()) err.email = "Email é obrigatório";
+    else if (!/^\S+@\S+\.\S+$/.test(form.email)) err.email = "Email inválido";
+    if (!form.CPF.trim()) err.CPF = "CPF é obrigatório";
+    else if (!/^\d{11}$/.test(form.CPF)) err.CPF = "CPF deve ter 11 dígitos numéricos";
+    if (!form.telefone.trim()) err.telefone = "Telefone é obrigatório";
+    else if (!/^\d{9,}$/.test(form.telefone)) err.telefone = "O telefone tem que ter no mínimo 9 dígitos";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -73,6 +76,7 @@ export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalPr
           <TextField
             label="Email"
             fullWidth
+            required
             value={form.email}
             onChange={handleChange("email")}
             error={!!errors.email}
@@ -81,14 +85,16 @@ export function CriarClienteModal({ open, onClose, onSave }: CriarClienteModalPr
           <TextField
             label="CPF (apenas números)"
             fullWidth
+            required
             value={form.CPF}
             onChange={handleChange("CPF")}
-            error={!!errors.cpf}
-            helperText={errors.cpf}
+            error={!!errors.CPF}
+            helperText={errors.CPF}
           />
           <TextField
             label="Telefone (apenas números)"
             fullWidth
+            required
             value={form.telefone}
             onChange={handleChange("telefone")}
             error={!!errors.telefone}
