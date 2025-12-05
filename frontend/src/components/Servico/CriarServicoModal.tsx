@@ -9,9 +9,8 @@ import {
   MenuItem,
   CircularProgress,
   Box,
+  Alert,
 } from "@mui/material";
-import { createServicoSchema } from "../../schemas/servicoSchema";
-import { validateField } from "../../schemas/validation";
 import { getClientes } from "../../services/clienteService";
 import { getFuncionarios } from "../../services/funcionarioService";
 import type { Cliente } from "../../types/cliente";
@@ -68,75 +67,84 @@ export const CriarServicoModal = ({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        const schemaKey = name === "clienteId" ? "clienteID" : name === "funcionarioId" ? "funcionarioID" : name;
-        try {
-            if (typeof validateField === "function") {
-                (validateField as any)(createServicoSchema.partial(), schemaKey, value);
-            }
-            setErrors(prev => ({ ...prev, [name]: "" }));
-        } catch (err: any) {
-            setErrors(prev => ({ ...prev, [name]: err?.message ?? "Valor inválido" }));
-        }
+        setErrors(prev => ({ ...prev, [name]: "" }));
     };
 
     const handleSelectChange = (name: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
         setFormData(prev => ({ ...prev, [name]: value }));
-        const schemaKey = name === "clienteId" ? "clienteID" : "funcionarioID";
-        try {
-            if (typeof validateField === "function") {
-                (validateField as any)(createServicoSchema.partial(), schemaKey, value);
-            }
-            setErrors(prev => ({ ...prev, [name]: "" }));
-        } catch (err: any) {
-            setErrors(prev => ({ ...prev, [name]: err?.message ?? "Valor inválido" }));
-        }
+        setErrors(prev => ({ ...prev, [name]: "" }));
     };
 
-const handleSave = useCallback(async () => {
+    const handleSave = useCallback(async () => {
         if (saving) return;
         setSaving(true);
         setErrors({});
         try {
-            // bloqueia envio se não selecionou cliente/funcionário
-            if (!formData.clienteId || !formData.funcionarioId) {
-                setErrors({
-                    clienteId: !formData.clienteId ? "Selecione um cliente" : "",
-                    funcionarioId: !formData.funcionarioId ? "Selecione um funcionário" : "",
-                });
+            // valida campos obrigatórios
+            if (!formData.clienteId || formData.clienteId === 0) {
+                setErrors(prev => ({ ...prev, clienteId: "Selecione um cliente" }));
+                setSaving(false);
+                return;
+            }
+            if (!formData.funcionarioId || formData.funcionarioId === 0) {
+                setErrors(prev => ({ ...prev, funcionarioId: "Selecione um funcionário" }));
+                setSaving(false);
+                return;
+            }
+            if (!formData.motivo || formData.motivo.trim() === "") {
+                setErrors(prev => ({ ...prev, motivo: "Motivo é obrigatório" }));
                 setSaving(false);
                 return;
             }
 
-            const payloadForValidation = {
-                motivo: formData.motivo || undefined,
-                dta_abertura: formData.dta_abertura ? new Date(formData.dta_abertura).toISOString() : undefined,
-                clienteId: formData.clienteId ? Number(formData.clienteId) : undefined,
-                funcionarioId: formData.funcionarioId ? Number(formData.funcionarioId) : undefined,
-            };
+            // converte data para ISO 8601 string
+            const dtaAbertura = formData.dta_abertura 
+                ? new Date(formData.dta_abertura).toISOString() 
+                : new Date().toISOString();
 
-            const parsed = createServicoSchema.partial().safeParse(payloadForValidation);
-            if (!parsed.success) {
-                const fieldErrors: Record<string,string> = {};
-                for (const issue of parsed.error.issues) {
-                    const key = issue.path[0] as string;
-                    const uiKey = key === "clienteID" ? "clienteId" : key === "funcionarioID" ? "funcionarioId" : key;
-                    fieldErrors[uiKey] = issue.message;
-                }
-                setErrors(fieldErrors);
-                setSaving(false);
-                return;
-            }
-
-
-            await onSave({
-                motivo: formData.motivo,
-                // mantemos Date para o onSave (mas no service que chama a API converta para string/ISO se necessário)
-                dta_abertura: formData.dta_abertura ? new Date(formData.dta_abertura) : new Date(),
+            // payload para log/debug
+            const payload = {
+                motivo: formData.motivo.trim(),
+                dta_abertura: dtaAbertura,
                 clienteId: Number(formData.clienteId),
                 funcionarioId: Number(formData.funcionarioId),
+            };
+            console.log("📤 Payload enviado para POST /servicos:", payload);
+
+            await onSave({
+                motivo: payload.motivo,
+                dta_abertura: new Date(payload.dta_abertura),
+                clienteId: payload.clienteId,
+                funcionarioId: payload.funcionarioId,
+            });
+
+            // reseta form ao salvar com sucesso
+            setFormData({
+                dta_abertura: "",
+                motivo: "",
+                clienteId: 0,
+                funcionarioId: 0,
             });
             onClose();
+        } catch (err: any) {
+            console.error("❌ Erro ao criar serviço:", err);
+            // captura resposta do servidor se existir
+            if (err?.response?.data) {
+                console.error("📥 Resposta do servidor:", err.response.data);
+                // mapeia erros do backend para o form
+                if (typeof err.response.data === "object") {
+                    const fieldErrors: Record<string,string> = {};
+                    for (const key of Object.keys(err.response.data)) {
+                        fieldErrors[key] = String(err.response.data[key]);
+                    }
+                    setErrors(fieldErrors);
+                } else if (typeof err.response.data === "string") {
+                    setErrors({ geral: err.response.data });
+                }
+            } else {
+                setErrors({ geral: err.message || "Erro ao criar serviço" });
+            }
         } finally {
             setSaving(false);
         }
@@ -152,6 +160,11 @@ const handleSave = useCallback(async () => {
                     </Box>
                 ) : (
                     <>
+                        {errors.geral && (
+                            <Alert severity="error" sx={{ mb: 2 }}>
+                                {errors.geral}
+                            </Alert>
+                        )}
                         <TextField
                             margin="normal"
                             fullWidth
