@@ -38,7 +38,7 @@ model Servico{
   funcionarioId Int
 
   cliente Cliente @relation(fields: [clienteId], references: [id])
-  funcionario Funcionario @relation(fields: [funcionarioID], references: [id])
+  funcionario Funcionario @relation(fields: [funcionarioId], references: [id])
 
   @@map("servicos")
 }

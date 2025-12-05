@@ -103,13 +103,6 @@ router.get("/clientes/:id", clienteController.getClientesById);
  *                type: string
  *              telefone:
  *                type: number
- *              servicos:
- *                type: array
- *                items:
- *                  type: object
- *                  properties:
- *                    id:
- *                      type: integer
  *     responses:
  *       201:
  *        description: Cliente criado com sucesso
@@ -150,13 +143,6 @@ router.post("/clientes", clienteController.createCliente);
  *                type: string
  *              telefone:
  *                type: number
- *              servicos:
- *                type: array
- *                items:
- *                  type: object
- *                  properties:
- *                    id:
- *                      type: integer
  *     responses:
  *       200:
  *         description: Cliente atualizado com sucesso

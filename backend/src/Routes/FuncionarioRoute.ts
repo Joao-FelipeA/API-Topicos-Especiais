@@ -109,13 +109,6 @@ router.get(
  *                type: string
  *              senha:
  *                type: string
- *              servicos:
- *                type: array
- *                items:
- *                  type: object
- *                  properties:
- *                    id:
- *                      type: integer
  *     responses:
  *       201:
  *        description: Funcionario criado com sucesso
@@ -161,13 +154,6 @@ router.post(
  *                type: string
  *              senha:
  *                type: string
- *              servicos:
- *                type: array
- *                items:
- *                  type: object
- *                  properties:
- *                    id:
- *                      type: integer
  *     responses:
  *       200:
  *         description: Funcionario atualizado com sucesso
@@ -205,11 +191,6 @@ router.put(
 router.delete(
   "/funcionarios/:id",
   funcionarioController.deletar.bind(funcionarioController)
-);
-
-router.post(
-  "/login",
-  funcionarioController.buscarPorLogin.bind(funcionarioController)
 );
 
 /**
@@ -263,5 +244,9 @@ router.post(
  *       500:
  *         description: Erro no servidor
  */
+router.post(
+  "/login",
+  funcionarioController.buscarPorLogin.bind(funcionarioController)
+);
 
 export default router;

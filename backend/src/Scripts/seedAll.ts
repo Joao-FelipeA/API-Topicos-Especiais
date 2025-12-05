@@ -49,19 +49,19 @@ async function main() {
 
   // Criar serviços
   await servicoService.create({
-    Motivo: "Curto na rede eletrica",
+    motivo: "Curto na rede eletrica",
     status: "aberto",
     valor_total: 150.5,
     clienteId: cliente1.id,
-    funcionarioID: funcionario1.id,
+    funcionarioId: funcionario1.id,
   });
 
   await servicoService.create({
-    Motivo: "Infiltração",
+    motivo: "Infiltração",
     status: "concluido",
     valor_total: 300,
     clienteId: cliente2.id,
-    funcionarioID: funcionario2.id,
+    funcionarioId: funcionario2.id,
   });
 
   console.log("Seed finalizado.");

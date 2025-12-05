@@ -28,15 +28,17 @@ const router = Router();
  *                 $ref: '#/components/schemas/Servico'
  *             example:
  *               - id: 1
+ *                 Motivo: "Curto na rede eletrica"
  *                 status: "aberto"
  *                 valor_total: 150.5
  *                 clienteId: 1
- *                 funcionarioID: 2
+ *                 funcionarioId: 2
  *               - id: 2
+ *                 Motivo: "Infiltração"
  *                 status: "concluido"
  *                 valor_total: 300
  *                 clienteId: 2
- *                 funcionarioID: 1
+ *                 funcionarioId: 1
  *        500:
  *         description: Erro no servidor
  */
@@ -69,7 +71,12 @@ router.get("/servicos", authenticateToken, ServicoController.getAllServicos);
  *               status: "aberto"
  *               valor_total: 150.5
  *               clienteID: 1
- *               funcionarioID: 2
+ *               funcionarioId: 2
+ *               Motivo: "Curto na rede eletrica"
+ *               status: "aberto"
+ *               valor_total: 150.5
+ *               clienteId: 1
+ *               funcionarioId: 2
  *       400:
  *         description: ID inválido
  *       404:
@@ -100,9 +107,9 @@ router.get(
  *                type: number
  *              clienteID:
  *                type: integer
- *              funcionarioID:
+ *              funcionarioId:
  *                type: integer
- *              dta_conclusao:
+ *              dta_abertura:
  *                type: string
  *                format: date-time
  *     responses:
@@ -141,7 +148,7 @@ router.post("/servicos", authenticateToken, ServicoController.createServico);
  *                type: number
  *              clienteID:
  *                type: integer
- *              funcionarioID:
+ *              funcionarioId:
  *                type: integer
  *              dta_conclusao:
  *                type: string

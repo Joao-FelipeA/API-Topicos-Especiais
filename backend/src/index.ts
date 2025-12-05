@@ -27,5 +27,6 @@ const server = app.listen(PORT, () => {
     console.log(
       `📡 Documentação disponível em: http://localhost:${address.port}/api-docs`
     );
+    console.log(`Cors permitido para: ${CORS_ORIGIN}`);
   }
 });
